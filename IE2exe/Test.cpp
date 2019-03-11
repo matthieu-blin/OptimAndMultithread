@@ -7,6 +7,7 @@ namespace Test
 
 //TEST 0 ////////////////////////////////////////////////////////////////////////
 
+	//test
 	Test0::Player::Player()
 	{
 		name = (char*)malloc(sizeof(char) * 10);
