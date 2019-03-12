@@ -9,15 +9,15 @@ namespace Source
 
 	Test0::Player::Player()
 	{
-		name = (char*)malloc(sizeof(char) * 10);
-		for (int i = 0; i < 9; ++i)
+		name = (char*)malloc(sizeof(char) * 100);
+		for (int i = 0; i < 99; ++i)
 			name[i] = ((float)std::rand() / RAND_MAX) * 26.f + 97; //generate rubbish char 
-		name[9] = '\0';
+		name[99] = '\0';
 	}
 
 	Test0::Player::Player(const Player& _player)
 	{
-		name = (char*)malloc(sizeof(char) * 10);
+		name = (char*)malloc(sizeof(char) * 100);
 		memcpy(name, _player.name, sizeof(_player.name));
 		life = _player.life;
 	}

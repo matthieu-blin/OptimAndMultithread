@@ -145,12 +145,16 @@ int main(int argc, char* argv[])
 	}
 	case 5: 
 	{
+		char name[128];
+		std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+			std::chrono::system_clock::now().time_since_epoch());
+		sprintf_s(name, "%llu", ms.count());
 		for (int i = 0; i < 1000000; ++i)
 		{
 			if (src)
-				Source::Test5::ComputeString((i % 4) + 97, "name");
+				Source::Test5::ComputeString((i % 4) + 97, name);
 			else
-				Test::Test5::ComputeString((i % 4) + 97, "name");
+				Test::Test5::ComputeString((i % 4) + 97, name);
 		}
 		return 1;
 	}
