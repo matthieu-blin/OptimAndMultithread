@@ -1,10 +1,13 @@
 #pragma once
 
 #include <vector>
+#include <algorithm>
+#include <unordered_map>
+#include <list>
+#include <set>
 #include <functional>
 #include <string>
-#include <unordered_map>
-//YOU SHOULD NOT MODIFY THIS FILE
+
 //Source code of what you should optimize
 namespace Test
 {
@@ -17,6 +20,7 @@ namespace Test
 		public:
 			Player();
 			Player(const Player& _player);
+			Player(Player&& _player);
 			~Player();
 		private :
 			char* name = nullptr;
@@ -28,6 +32,7 @@ namespace Test
 	private :
 		std::vector<Player> m_players;
 	};
+
 
 //TEST 1 ////////////////////////////////////////////////////////////////////////
 	class Test1
@@ -42,10 +47,13 @@ namespace Test
 		char* FindData(long long _guid);
 
 	private :
-		std::vector<_Data> m_resources;
+		//solution : since we want to load all at once, then Finding Data N times
+		//the hashmap with its O(1) access in reading is most appropriate
+		std::unordered_map<long long , _Data> m_resources;
 	};
 
 //TEST 2 ////////////////////////////////////////////////////////////////////////
+
 	class Test2
 	{
 	public:
@@ -53,14 +61,19 @@ namespace Test
 		{
 			long long guid;
 			int eloScore;
+			friend  bool operator<(const _EloPlayer& l, const _EloPlayer& r)
+			{
+				return l.eloScore < r.eloScore;
+			}
 		};
+
 
 		void InsertPlayer(long long _guid, int _eloScore );
 		//find the a player with a elo score < to our score +10 max
 		long long FindNearestAdversary(	int _eloScore);
 
 	private :
-		std::vector<_EloPlayer> m_eloPlayers;
+		std::set<_EloPlayer> m_eloPlayers;
 	};
 
 //TEST 3 ////////////////////////////////////////////////////////////////////////
@@ -74,11 +87,12 @@ namespace Test
 			float z;
 		};
 
-		void InsertPosition(const _Vector3& _v);
+		void InsertPosition(_Vector3 _v);
 
 	private :
 		std::vector<_Vector3> m_positions;
 	};
+
 
 //TEST 4 ////////////////////////////////////////////////////////////////////////
 	class Test4
@@ -122,7 +136,7 @@ namespace Test
 
 	class _Test6Mob : public _Test6PhysicableI
 	{
-	public:
+	public : 
 		virtual bool IsPlayer() { return false; }
 		//impulse reversed for no reason and we dont care
 		void Impulse(float _x, float _y) override
@@ -138,10 +152,54 @@ namespace Test
 		void ImpulseAll(float _fx, float _fy);
 
 	private :
-		std::vector<_Test6PhysicableI*> m_physicable;
+
+		std::vector<_Test6Mob*> m_mobs;
+		std::vector<_Test6Player*> m_players;
 	};
 
-//TEST 7 ////////////////////////////////////////////////////////////////////////
+
+	//TEST 6b ////////////////////////////////////////////////////////////////////////
+
+	class _Test6bPlayer
+	{
+	public:
+		void Impulse(float _x, float _y) 
+		{
+			m_X += _x;
+			m_Y += _y;
+		}
+	private:
+		float m_X = 0.f;
+		float m_Y = 0.f;
+	};
+
+	class _Test6bMob 
+	{
+	public:
+		//impulse reversed for no reason and we dont care
+		void Impulse(float _x, float _y) 
+		{
+			m_X -= _x;
+			m_Y -= _y;
+		}
+	private:
+		float m_X = 0.f;
+		float m_Y = 0.f;
+	};	
+	class Test6b
+	{
+	public:
+		void InsertXMob(int x);
+		void InsertXPlayer(int x);
+		void ImpulseAll(float _fx, float _fy);
+
+	private:
+
+		std::vector<_Test6bMob*> m_mobs;
+		std::vector<_Test6bPlayer*> m_players;
+	};
+
+	//TEST 7 ////////////////////////////////////////////////////////////////////////
 	class Test7
 	{
 		enum class _ComponentType{
@@ -187,7 +245,6 @@ namespace Test
 		{
 		public:
 			Entity(_Component** _components, int _nb);
-	
 			template <typename T>
 			T* GetComponentT(_ComponentType _type)
 			{
@@ -203,10 +260,16 @@ namespace Test
 				}
 				return nullptr;
 			}
+			template<> 
+			_Transform* GetComponentT(_ComponentType _type) {
+				if (!m_transform)
+					m_transform = static_cast<_Transform*>(GetComponent(_type));
+				return m_transform;
+			}
 
 		private :
 			std::vector<_Component*> m_components;
-			
+			_Transform* m_transform = nullptr;
 		};
 	public:
 		void _InsertXEntity(int x);
@@ -219,7 +282,7 @@ namespace Test
 //TEST 8 ////////////////////////////////////////////////////////////////////////
 	class Test8
 	{
-	public :
+	public:
 		static const int M_SIZE = 256;
 		typedef float LargeMatrix[M_SIZE][M_SIZE];
 		static void _RandMatrix(LargeMatrix& A);
@@ -227,6 +290,7 @@ namespace Test
 
 	};
 
+	
 //TEST 9 ////////////////////////////////////////////////////////////////////////
 	class Test9
 	{
@@ -249,6 +313,7 @@ namespace Test
 
 			unsigned long _UID() const { return uid; }
 			char* _GetData() const { return data; }
+			char* LoadAndGetData();
             static unsigned long _Hash(const char *str);
 
 		private:
