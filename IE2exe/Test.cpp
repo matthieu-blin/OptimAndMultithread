@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Test.h"
-#include <algorithm>
 
 namespace Test
 {
@@ -9,15 +8,15 @@ namespace Test
 
 	Test0::Player::Player()
 	{
-		name = (char*)malloc(sizeof(char) * 100);
-		for (int i = 0; i < 99; ++i)
+		name = (char*)malloc(sizeof(char) * 10);
+		for (int i = 0; i < 9; ++i)
 			name[i] = ((float)std::rand() / RAND_MAX) * 26.f + 97; //generate rubbish char 
-		name[99] = '\0';
+		name[9] = '\0';
 	}
 
 	Test0::Player::Player(const Player& _player)
 	{
-		name = (char*)malloc(sizeof(char) * 100);
+		name = (char*)malloc(sizeof(char) * 10);
 		memcpy(name, _player.name, sizeof(_player.name));
 		life = _player.life;
 	}
@@ -26,6 +25,17 @@ namespace Test
 	{
 		free(name);
 		life = 0;
+	}
+	//Solution : use move operator instead of copy
+	//will avoid the malloc and memcpy cost
+	//note : the every operator must exist when declaring a move operator
+	//so the copy operator must exist 
+	//it will still be used for assignment of temporary var on push back
+	Test0::Player::Player(Player&& _player)
+	{
+		name = _player.name;
+		_player.name = nullptr;
+		life = _player.life;
 	}
 
 	void Test0::_GenerateNewPlayer()
@@ -39,47 +49,49 @@ namespace Test
 	void Test1::FillWithFakeResources(int _nbFake)
 	{
 		for (int i = 0; i < _nbFake; ++i)
-			m_resources.push_back(_Data{ std::rand(), nullptr });
+		{
+			long long guid = std::rand();
+			m_resources[guid] = _Data{ guid, nullptr };
+		}
 	}
 
 	char* Test1::FindData(long long _guid)
 	{
-		auto iFound = std::find_if(m_resources.begin(), m_resources.end(),
-			[_guid](const _Data& _data)->bool {
-			return _data.guid == _guid;
-		}
-		);
+		auto iFound = m_resources.find(_guid);
 		if (iFound != m_resources.end())
-			return iFound->binaryData;
+			return iFound->second.binaryData;
 		return nullptr;
 	}
+
 
 //TEST 2 ////////////////////////////////////////////////////////////////////////
 
 	void Test2::InsertPlayer(long long _guid, int _eloScore)
 	{
-		m_eloPlayers.push_back(_EloPlayer{ _guid, _eloScore });
+		m_eloPlayers.insert(_EloPlayer{ _guid, _eloScore });
+		
 	}
 
 	long long Test2::FindNearestAdversary(int _eloScore)
 	{
-		_EloPlayer foundPlayer{-1, -1};
-		for (auto& target : m_eloPlayers)
+		for (auto& eloPlayer : m_eloPlayers)
 		{
-			if (target.eloScore > foundPlayer.eloScore && target.eloScore <= _eloScore + 10)
+			if (eloPlayer.eloScore <= _eloScore + 10)
 			{
-				foundPlayer = target; 
+				continue;
 			}
+			return eloPlayer.guid;
 		}
-		return foundPlayer.guid;
+		return -1;
 	}
 
+
 //TEST 3 ////////////////////////////////////////////////////////////////////////
-	
-	void Test3::InsertPosition(const _Vector3& _v)
+	void Test3::InsertPosition(_Vector3 _v)
 	{
 		m_positions.push_back(_v);
 	}
+
 
 //TEST 4 ////////////////////////////////////////////////////////////////////////
 	Test4::_Player::_Player()
@@ -104,63 +116,61 @@ namespace Test
 
 	void Test4::InsertNewPlayerAtConditions(const std::vector<std::function<bool()>>& _conditions)
 	{
-		_Player newPlayer;
 		for (const auto& condition : _conditions)
 		{
 			if (!condition())
 				return;
 		}
-		m_players.push_back(newPlayer);
+		m_players.push_back(_Player());
 
 	}
 
 //TEST 5 ////////////////////////////////////////////////////////////////////////
 	std::string Test5::ComputeString(char _letter, const char* _prefix)
 	{
-		std::string result;
-		result = _prefix;
+		static  std::string _str;
+		_str = _prefix;
 		switch (_letter)
 		{
 		case 'a' :
-			result = result + " alpha"; break;
+			return _str += " alpha";
 		case 'b' :
-			result = result + " beta"; break;
+			return _str += " beta";
 		case 'c' :
-			result = result + " charlie"; break;
+			return _str += " charlie";
 		default :
-			result = "unimplemented"; break;
+			return  "unimplemented";
 		}
-		return result;
+		return "" ;
 
 	}
+
 //TEST 6 ////////////////////////////////////////////////////////////////////////
 
 	void Test6::_InsertXMob(int x)
 	{
 		for (int i = 0; i < x; ++i)
-			m_physicable.push_back(new _Test6Mob());
+			m_mobs.push_back(new _Test6Mob());
 	}
 
 	void Test6::_InsertXPlayer(int x)
 	{
 		for (int i = 0; i < x; ++i)
-			m_physicable.push_back(new _Test6Player());
+			m_players.push_back(new _Test6Player());
 	}
 
 	void Test6::ImpulseAll(float _fx, float _fy)
 	{
 		//first players
-		for (auto* p : m_physicable)
+		for (auto* p : m_players)
 		{
-			if(p->IsPlayer())
-				p->Impulse(_fx, _fy);
+			p->Impulse(_fx, _fy);
 		}
 
 		//then mobs
-		for (auto* p : m_physicable)
+		for (auto* p : m_mobs)
 		{
-			if(!p->IsPlayer())
-				p->Impulse(_fx, _fy);
+			p->Impulse(_fx, _fy);
 		}
 	}
 
@@ -192,8 +202,8 @@ namespace Test
 
 	void Test8::_RandMatrix(LargeMatrix& A)
 	{
-		for (int i = 0; i < M_SIZE; i++)
-			for (int j = 0; j < M_SIZE; j++)
+		for (int j = 0; j < M_SIZE; j++)
+			for (int i = 0; i < M_SIZE; i++)
 				A[i][j] = std::rand() * 1.f;
 	}
 
@@ -201,11 +211,10 @@ namespace Test
 	void Test8::MultiplyMatrix(const LargeMatrix& A, const LargeMatrix& B, LargeMatrix& R)
 	{
 		for (int i = 0; i < M_SIZE; i++)
-			for (int j = 0; j < M_SIZE; j++)
-				for (int k = 0; k < M_SIZE; k++)
+			for (int k = 0; k < M_SIZE; k++)
+				for (int j = 0; j < M_SIZE; j++)
 					R[i][j] += A[i][k] * B[k][j];
 	}
-
 
 //TEST 9 ////////////////////////////////////////////////////////////////////////
 	void Test9::_InitializeRandomValue()
@@ -227,6 +236,8 @@ namespace Test
 		
 		for (unsigned char v : m_randomValues)
 		{
+			if (v == _value)
+				return v;
 			auto gap = std::abs(_value - v);
 			if(gap < currentGap);
 			{
@@ -242,7 +253,6 @@ namespace Test
     Test10::IOResource::IOResource(const char* _path)
     {
 		uid = _Hash(_path);
-        _LoadDataSync();
     }
     
     void Test10::IOResource::_LoadDataSync()
@@ -261,6 +271,13 @@ namespace Test
         free(data);
     }
 	
+	char* Test10::IOResource::LoadAndGetData()
+	{
+		if (data == nullptr)
+			_LoadDataSync();
+		return data;
+	}
+
 	unsigned long Test10::IOResource::_Hash(const char *str)
     {
         unsigned long hash = 5381;
@@ -286,11 +303,8 @@ namespace Test
 		auto iData = m_data.find(IOResource::_Hash(_path));
 		if (iData != m_data.end())
 		{
-			return iData->second->_GetData();
+			return iData->second->LoadAndGetData();
 		}
 		return nullptr;
     }
-
- 
-
 }//namespace
