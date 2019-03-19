@@ -223,7 +223,11 @@ namespace Source
 	class Test8
 	{
 	public :
+#if _DEBUG
+		static const int M_SIZE = 128;
+#else
 		static const int M_SIZE = 256;
+#endif
 		typedef float LargeMatrix[M_SIZE][M_SIZE];
 		static void _RandMatrix(LargeMatrix& A);
 		static void MultiplyMatrix(const LargeMatrix& A, const LargeMatrix& B, LargeMatrix& R);
