@@ -41,10 +41,6 @@ TEST_CASE("Classic issue 2", "[Optim]")
 	EXEC_AND_COMPARE_DURATION(4);
 }
 
-TEST_CASE("Classic issue 3", "[Optim]")
-{
-	EXEC_AND_COMPARE_DURATION(5);
-}
 
 TEST_CASE("around vtable ", "[Optim]")
 {

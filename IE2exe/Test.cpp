@@ -126,25 +126,6 @@ namespace Test
 
 	}
 
-//TEST 5 ////////////////////////////////////////////////////////////////////////
-	std::string Test5::ComputeString(char _letter, const char* _prefix)
-	{
-		static  std::string _str;
-		_str = _prefix;
-		switch (_letter)
-		{
-		case 'a' :
-			return _str += " alpha";
-		case 'b' :
-			return _str += " beta";
-		case 'c' :
-			return _str += " charlie";
-		default :
-			return  "unimplemented";
-		}
-		return "" ;
-
-	}
 
 //TEST 6 ////////////////////////////////////////////////////////////////////////
 
@@ -203,8 +184,8 @@ namespace Test
 
 	void Test8::_RandMatrix(LargeMatrix& A)
 	{
-		for (int j = 0; j < M_SIZE; j++)
-			for (int i = 0; i < M_SIZE; i++)
+		for (int i = 0; i < M_SIZE; i++)
+			for (int j = 0; j < M_SIZE; j++)
 				A[i][j] = std::rand() * 1.f;
 	}
 
