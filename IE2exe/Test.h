@@ -98,13 +98,6 @@ namespace Test
 		std::vector<_Player> m_players;
 	};
 
-//TEST 5 ////////////////////////////////////////////////////////////////////////
-	class Test5
-	{
-	public:
-		static std::string ComputeString(char _letter, const char* _prefix);
-	};
-
 //TEST 6 ////////////////////////////////////////////////////////////////////////
 
 	class Test6PhysicableI
@@ -229,7 +222,7 @@ namespace Test
 	class Test8
 	{
 	public :
-		static const int M_SIZE = 128;
+		static const int M_SIZE = 256;
 		typedef float LargeMatrix[M_SIZE][M_SIZE];
 		static void _RandMatrix(LargeMatrix& A);
 		static void MultiplyMatrix(const LargeMatrix& A, const LargeMatrix& B, LargeMatrix& R);
