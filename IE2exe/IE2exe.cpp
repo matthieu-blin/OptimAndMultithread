@@ -7,6 +7,7 @@
 #include "Source.h"
 #include "Test.h"
 
+
 using namespace std;
 
 int main(int argc, char* argv[])
@@ -339,6 +340,108 @@ int main(int argc, char* argv[])
 				t += (unsigned long long)data;
 			}
 			return t;
+		}
+		return 1;
+	}
+	
+	case 11:
+	{
+		if (src)
+		{
+			Source::Test11 tst; 
+			int result = 0;
+
+			int n = 100000;
+			while (--n, n >= 0)
+			{
+				result += tst.SumAllDigits("0123456789");//45
+				result += tst.SumAllDigits("le chien a mangé 10 bonnes croquettes");
+				result += tst.SumAllDigits("qwettytuytiyo32`321532vcx456sf1è2`trey");
+				result += tst.SumAllDigits("Le Trône de fer (A Song of Ice and Fire) est une série de romans de fantasy de George R. R. Martin, dont l'écriture et la parution sont en cours. Martin a commencé à l'écrire en 1991 et le premier volume est paru en 1996 chez Bantam Books. Prévue à l'origine comme une trilogie, la série compte désormais cinq volumes publiés et deux autres sont attendus (les tomes ont ensuite été redécoupés dans la traduction française).  L'histoire se déroule dans un monde imaginaire où la société est de type féodal et où la magie et des créatures légendaires (telles que les dragons) ont existé mais sont censées avoir disparu. Trois intrigues principales s'y entremêlent : dans le royaume des Sept Couronnes, plusieurs maisons nobles rivalisent pour l'obtention du trône ; dans les contrées glacées situées au nord du royaume, une race de créatures supposée appartenir aux légendes se réveille ; et sur le continent oriental, la dernière héritière des Targaryen (la dynastie royale des Sept Couronnes renversée quinze ans auparavant), cherche à reconquérir le trône.  Chaque chapitre est présenté à travers le point de vue de l'un des personnages principaux. Les thèmes abordés sont plus réalistes que dans la fantasy traditionnelle. Les quelque vingt personnages principaux présentent souvent un comportement d'une moralité ambiguë, et les intrigues politiques et les renversements de situation sont fréquents.La violence et la sexualité occupent aussi des places importantes. ");
+
+			}
+			return result;
+		}
+		else
+		{
+			Test::Test11 tst;
+			int result = 0;
+			int n = 100000;
+			while (--n, n >= 0)
+			{
+				result += tst.SumAllDigits("0123456789");//45
+				result += tst.SumAllDigits("le chien a mangé 10 bonnes croquettes");
+				result += tst.SumAllDigits("qwettytuytiyo32`321532vcx456sf1è2`trey");
+				result += tst.SumAllDigits("Le Trône de fer (A Song of Ice and Fire) est une série de romans de fantasy de George R. R. Martin, dont l'écriture et la parution sont en cours. Martin a commencé à l'écrire en 1991 et le premier volume est paru en 1996 chez Bantam Books. Prévue à l'origine comme une trilogie, la série compte désormais cinq volumes publiés et deux autres sont attendus (les tomes ont ensuite été redécoupés dans la traduction française).  L'histoire se déroule dans un monde imaginaire où la société est de type féodal et où la magie et des créatures légendaires (telles que les dragons) ont existé mais sont censées avoir disparu. Trois intrigues principales s'y entremêlent : dans le royaume des Sept Couronnes, plusieurs maisons nobles rivalisent pour l'obtention du trône ; dans les contrées glacées situées au nord du royaume, une race de créatures supposée appartenir aux légendes se réveille ; et sur le continent oriental, la dernière héritière des Targaryen (la dynastie royale des Sept Couronnes renversée quinze ans auparavant), cherche à reconquérir le trône.  Chaque chapitre est présenté à travers le point de vue de l'un des personnages principaux. Les thèmes abordés sont plus réalistes que dans la fantasy traditionnelle. Les quelque vingt personnages principaux présentent souvent un comportement d'une moralité ambiguë, et les intrigues politiques et les renversements de situation sont fréquents.La violence et la sexualité occupent aussi des places importantes. ");
+			}
+			return result;
+		}
+		return 1;
+	}
+
+	case 12 :
+	{
+		if (src)
+		{
+			Source::Test12 tst;
+			int result = 0;
+
+			int n = 1000000;
+			while (--n, n >= 0)
+			{
+				unsigned long pArray[] = { 1,2,3,4,5 };
+				unsigned long pArray2[] = { 788, 432,43 ,14321,43214,5437,6584,876,978,9871,870,9870,98097,72,5432, 783, 4966, 4984613, 849, 1256, 16516, 1686, 16168, 156184, 616513784 };
+				unsigned long newsize = tst.filterArray(pArray, 5);
+				for (int i = 0; i < newsize; i++)
+				{
+					result += pArray[i];
+				}
+
+				newsize = tst.filterArray(pArray2, sizeof(pArray2) / sizeof(long));
+				for (int i = 0; i < newsize; i++)
+				{
+					result += pArray2[i];
+				}
+			}
+			return result;
+		}
+		else
+		{
+			Test::Test12 tst;
+			int result = 0;
+
+			int n = 1000000;
+			while (--n, n >= 0)
+			{
+				unsigned long pArray[] = { 1,2,3,4,5 };
+				unsigned long pArray2[] = { 788, 432,43 ,14321,43214,5437,6584,876,978,9871,870,9870,98097,72,5432, 783, 4966, 4984613, 849, 1256, 16516, 1686, 16168, 156184, 616513784 };
+				unsigned long newsize = tst.filterArray(pArray, 5);
+				for (int i = 0; i < newsize; i++)
+				{
+					result += pArray[i];
+				}
+
+				newsize = tst.filterArray(pArray2, sizeof(pArray2) / sizeof(long));
+				for (int i = 0; i < newsize; i++)
+				{
+					result += pArray2[i];
+				}
+			}
+			return result;
+		}
+		return 0;
+
+	}
+
+	case 14 :
+	{
+		int n = 1000;
+		while (--n, n != 0)
+		{
+			if (src)
+				Source::Sample::Exec();
+			else
+				Test::Sample::Exec();
 		}
 		return 1;
 	}

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Source.h"
 #include <algorithm>
+#include <array>
 
 namespace Source
 {
@@ -291,6 +292,71 @@ namespace Source
 		return nullptr;
     }
 
- 
+
+	int Test11::SumAllDigits(const char* _text)
+	{
+		char* pTextTP;
+		pTextTP = new char[2];
+		int retval = 0;
+		for (int i = 0; i < strlen(_text); i++)
+		{
+			pTextTP[0] = _text[i];
+			pTextTP[1] = 0;
+			if (atoi(pTextTP) > 0)
+			{
+				retval = retval + atoi(pTextTP);
+			}
+
+		}
+		delete pTextTP;
+		return retval;
+	}
+
+
+	unsigned long Test12::filterArray(unsigned long* _pArray, unsigned long _size)
+	{
+		unsigned long newsize = _size;
+
+		for (unsigned long i = 0; i < newsize; i++)
+		{
+			if (_pArray[i] != (_pArray[i] / 2) * 2)
+			{
+				for (unsigned long j = 0; j < _size - 1; j++)
+				{
+					if (j >= i)
+					{
+						_pArray[j] = _pArray[j + 1];
+
+					}
+				}
+				i--;
+				newsize--;
+			}
+		}
+		return newsize;
+	}
+
+	//void Sample::Exec()
+
+	void Sample::Exec()
+	{
+		const int X = 1000;
+		const int Y = 1000;
+
+		auto arr = new int[X][Y];
+
+		for (int y = 1; y < Y; ++y)
+			for (int x = 1; x < X; ++x)
+				arr[x][y] = x + y;
+	}
+
+	void foo()
+	{
+		std::list<int> list;
+		int x = 0;
+		while (++x, x < 10)
+			list.insert(list.begin(), x);
+	}
+
 
 }//namespace

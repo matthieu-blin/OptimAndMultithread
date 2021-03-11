@@ -274,5 +274,27 @@ namespace Source
 		std::unordered_map<unsigned long long, IOResource*> m_data;
 	};
 
+	//TEST 11 ////////////////////////////////////////////////////////////////////////
+	class Test11
+	{
+	public:
+		int SumAllDigits(const char* _text);
+	};
+
+	//TEST 12 ////////////////////////////////////////////////////////////////////////
+	class Test12
+	{
+	public:
+		unsigned long filterArray(unsigned long* _pArray, unsigned long _size);
+	};
+
+
+	class Sample
+	{
+	public:
+		static void Exec();
+	private:
+	};
+
 	
 }

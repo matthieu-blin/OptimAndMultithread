@@ -66,3 +66,18 @@ TEST_CASE("Classic issue 5", "[Optim]")
 	EXEC_AND_COMPARE_DURATION(9);
 }
 
+TEST_CASE("Test11", "[Optim]")
+{
+	EXEC_AND_COMPARE_DURATION(11);
+}
+
+TEST_CASE("Test12", "[Optim]")
+{
+	EXEC_AND_COMPARE_DURATION(12);
+}
+
+
+TEST_CASE("Sample", "[Optim]")
+{
+	EXEC_AND_COMPARE_DURATION(12);
+}
