@@ -143,17 +143,6 @@ int main(int argc, char* argv[])
 		}
 		return 1;
 	}
-	case 5: 
-	{
-		for (int i = 0; i < 1000000; ++i)
-		{
-			if (src)
-				Source::Test5::ComputeString((i % 4) + 97, "name");
-			else
-				Test::Test5::ComputeString((i % 4) + 97, "name");
-		}
-		return 1;
-	}
 	case 6: 
 	{
 		if (src)
@@ -211,11 +200,6 @@ int main(int argc, char* argv[])
 			Source::Test8::LargeMatrix C;
 			for (int i = 0; i < 100; ++i)
 			{
-				if (i % 10 == 0)
-				{
-					Source::Test8::_RandMatrix(A);
-					Source::Test8::_RandMatrix(B);
-				}
 				Source::Test8::MultiplyMatrix(A, B, C);
 			}
 		}
@@ -226,11 +210,6 @@ int main(int argc, char* argv[])
 			Test::Test8::LargeMatrix C;
 			for (int i = 0; i < 100; ++i)
 			{
-				if (i % 10 == 0)
-				{
-					Test::Test8::_RandMatrix(A);
-					Test::Test8::_RandMatrix(B);
-				}
 				Test::Test8::MultiplyMatrix(A, B, C);
 			}
 		}

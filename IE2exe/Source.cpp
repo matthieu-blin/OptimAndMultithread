@@ -114,26 +114,6 @@ namespace Source
 		m_players.push_back(newPlayer);
 
 	}
-
-//TEST 5 ////////////////////////////////////////////////////////////////////////
-	std::string Test5::ComputeString(char _letter, const char* _prefix)
-	{
-		std::string result;
-		result = _prefix;
-		switch (_letter)
-		{
-		case 'a' :
-			result = result + " alpha"; break;
-		case 'b' :
-			result = result + " beta"; break;
-		case 'c' :
-			result = result + " charlie"; break;
-		default :
-			result = "unimplemented"; break;
-		}
-		return result;
-
-	}
 //TEST 6 ////////////////////////////////////////////////////////////////////////
 
 	void Test6::_InsertXMob(int x)
