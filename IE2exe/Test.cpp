@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Test.h"
+#include <string>
 
 namespace Test
 {
@@ -310,42 +311,28 @@ namespace Test
 
 	int Test11::SumAllDigits(const char* _text)
 	{
-		char* pTextTP;
-		pTextTP = new char[2];
 		int retval = 0;
-		for (int i = 0; i < strlen(_text); i++)
+		int len = std::strlen(_text);
+		for (unsigned int i = 0; i < len; i++)
 		{
-			pTextTP[0] = _text[i];
-			pTextTP[1] = 0;
-			if (atoi(pTextTP) > 0)
+			if (_text[i] >= 48 && _text[i] <= 57)
 			{
-				retval = retval + atoi(pTextTP);
+				retval += _text[i] - 48;
 			}
-
 		}
-		delete pTextTP;
 		return retval;
 	}
 
 
 	unsigned long Test12::filterArray(unsigned long* _pArray, unsigned long _size)
 	{
-		unsigned long newsize = _size;
-
-		for (unsigned long i = 0; i < newsize; i++)
+		unsigned long newsize = 0;
+		for (unsigned long i = 0; i < _size; i++)
 		{
-			if (_pArray[i] != (_pArray[i] / 2) * 2)
+			if ((_pArray[i] & 1) == 0) 
 			{
-				for (unsigned long j = 0; j < _size - 1; j++)
-				{
-					if (j >= i)
-					{
-						_pArray[j] = _pArray[j + 1];
-
-					}
-				}
-				i--;
-				newsize--;
+				_pArray[newsize] = _pArray[i];
+				newsize++;
 			}
 		}
 		return newsize;
