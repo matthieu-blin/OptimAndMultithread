@@ -101,7 +101,7 @@ namespace Source
 
 //TEST 6 ////////////////////////////////////////////////////////////////////////
 
-	class Test6PhysicableI
+	class _Test6PhysicableI
 	{
 	public :
 		virtual void Impulse(float _fx, float _fy) = 0;
@@ -110,7 +110,7 @@ namespace Source
 		float m_X = 0.f;
 		float m_Y = 0.f;
 	};
-	class _Test6Player : public Test6PhysicableI
+	class _Test6Player : public _Test6PhysicableI
 	{
 	public : 
 		virtual bool IsPlayer() { return true; }
@@ -121,7 +121,7 @@ namespace Source
 		}
 	};
 
-	class _Test6Mob : public Test6PhysicableI
+	class _Test6Mob : public _Test6PhysicableI
 	{
 	public : 
 		virtual bool IsPlayer() { return false; }
@@ -136,12 +136,12 @@ namespace Source
 	class Test6
 	{
 	public:
-		void _InsertXMob(int x);
-		void _InsertXPlayer(int x);
+		void InsertXMob(int x);
+		void InsertXPlayer(int x);
 		void ImpulseAll(float _fx, float _fy);
 
 	private :
-		std::vector<Test6PhysicableI*> m_physicable;
+		std::vector<_Test6PhysicableI*> m_physicable;
 	};
 
 //TEST 7 ////////////////////////////////////////////////////////////////////////
@@ -282,13 +282,6 @@ namespace Source
 		unsigned long filterArray(unsigned long* _pArray, unsigned long _size);
 	};
 
-
-	class Sample
-	{
-	public:
-		static void Exec();
-	private:
-	};
 
 	
 }

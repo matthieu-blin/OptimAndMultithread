@@ -73,7 +73,3 @@ TEST_CASE("Test12", "[Optim]")
 }
 
 
-TEST_CASE("Sample", "[Optim]")
-{
-	EXEC_AND_COMPARE_DURATION(12);
-}

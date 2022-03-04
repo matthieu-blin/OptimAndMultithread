@@ -100,18 +100,18 @@ namespace Test
 
 //TEST 6 ////////////////////////////////////////////////////////////////////////
 
-	class Test6PhysicableI
+	class _Test6PhysicableI
 	{
-	public :
+	public:
 		virtual void Impulse(float _fx, float _fy) = 0;
 		virtual bool IsPlayer() = 0;
-	protected :
+	protected:
 		float m_X = 0.f;
 		float m_Y = 0.f;
 	};
-	class _Test6Player : public Test6PhysicableI
+	class _Test6Player : public _Test6PhysicableI
 	{
-	public : 
+	public:
 		virtual bool IsPlayer() { return true; }
 		void Impulse(float _x, float _y) override
 		{
@@ -120,9 +120,9 @@ namespace Test
 		}
 	};
 
-	class _Test6Mob : public Test6PhysicableI
+	class _Test6Mob : public _Test6PhysicableI
 	{
-	public : 
+	public:
 		virtual bool IsPlayer() { return false; }
 		//impulse reversed for no reason and we dont care
 		void Impulse(float _x, float _y) override
@@ -130,17 +130,15 @@ namespace Test
 			m_X -= _x;
 			m_Y -= _y;
 		}
-	};
-
-	class Test6
+	};	class Test6
 	{
 	public:
-		void _InsertXMob(int x);
-		void _InsertXPlayer(int x);
+		void InsertXMob(int x);
+		void InsertXPlayer(int x);
 		void ImpulseAll(float _fx, float _fy);
 
 	private :
-		std::vector<Test6PhysicableI*> m_physicable;
+		std::vector<_Test6PhysicableI*> m_physicable;
 	};
 
 //TEST 7 ////////////////////////////////////////////////////////////////////////
@@ -280,13 +278,6 @@ namespace Test
 	public:
 		unsigned long filterArray(unsigned long* _pArray, unsigned long _size);
 	}; 
-
-	class Sample
-	{
-	public:
-		static void Exec();
-	private:
-	};
 
 	
 }

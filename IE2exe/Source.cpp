@@ -116,13 +116,13 @@ namespace Source
 	}
 //TEST 6 ////////////////////////////////////////////////////////////////////////
 
-	void Test6::_InsertXMob(int x)
+	void Test6::InsertXMob(int x)
 	{
 		for (int i = 0; i < x; ++i)
 			m_physicable.push_back(new _Test6Mob());
 	}
 
-	void Test6::_InsertXPlayer(int x)
+	void Test6::InsertXPlayer(int x)
 	{
 		for (int i = 0; i < x; ++i)
 			m_physicable.push_back(new _Test6Player());
@@ -316,27 +316,6 @@ namespace Source
 		return newsize;
 	}
 
-	//void Sample::Exec()
-
-	void Sample::Exec()
-	{
-		const int X = 1000;
-		const int Y = 1000;
-
-		auto arr = new int[X][Y];
-
-		for (int y = 1; y < Y; ++y)
-			for (int x = 1; x < X; ++x)
-				arr[x][y] = x + y;
-	}
-
-	void foo()
-	{
-		std::list<int> list;
-		int x = 0;
-		while (++x, x < 10)
-			list.insert(list.begin(), x);
-	}
 
 
 }//namespace

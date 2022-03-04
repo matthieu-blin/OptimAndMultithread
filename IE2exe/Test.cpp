@@ -117,13 +117,13 @@ namespace Test
 
 //TEST 6 ////////////////////////////////////////////////////////////////////////
 
-	void Test6::_InsertXMob(int x)
+	void Test6::InsertXMob(int x)
 	{
 		for (int i = 0; i < x; ++i)
 			m_physicable.push_back(new _Test6Mob());
 	}
 
-	void Test6::_InsertXPlayer(int x)
+	void Test6::InsertXPlayer(int x)
 	{
 		for (int i = 0; i < x; ++i)
 			m_physicable.push_back(new _Test6Player());
@@ -314,30 +314,6 @@ namespace Test
 			}
 		}
 		return newsize;
-	}
-
-
-	/* unoptimized code section */
-
-	//void Sample::Exec()
-	void foo()
-	{
-		const int X = 1000;
-		const int Y = 1000;
-
-		auto arr = new int[X][Y];
-
-		for (int x = 1; x < X; ++x)
-			for (int y = 1; y < Y; ++y)
-				arr[x][y] = x + y;
-	}
-
-	void Sample::Exec()
-	{
-		std::vector<int> list;
-		int x = 0;
-		while (++x, x < 10000)
-			list.insert(list.begin(), x);
 	}
 
  

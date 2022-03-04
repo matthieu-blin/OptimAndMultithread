@@ -104,15 +104,15 @@ int main(int argc, char* argv[])
 			Source::Test3 src;
 			for (int i = 0; i < 5000000; ++i)
 			{
-				src.InsertPosition(Source::Test3::_Vector3{i*1.0f, i*0.5f, i*1.7f});
+				src.InsertPosition(Source::Test3::_Vector3{ i * 1.0f, i * 0.5f, i * 1.7f });
 			}
 		}
 		else
 		{
-			Test::Test3 src;
+			Test::Test3 tst;
 			for (int i = 0; i < 5000000; ++i)
 			{
-				src.InsertPosition(Test::Test3::_Vector3{i*1.0f, i*0.5f, i*1.7f});
+				tst.InsertPosition(Test::Test3::_Vector3{ i * 1.0f, i * 0.5f, i * 1.7f });
 			}
 		}
 		return 1;
@@ -148,8 +148,8 @@ int main(int argc, char* argv[])
 		if (src)
 		{
 			Source::Test6 tst;
-			tst._InsertXMob(1000);
-			tst._InsertXPlayer(1000);
+			tst.InsertXMob(1000);
+			tst.InsertXPlayer(1000);
 			for (int i = 0; i < 10000; ++i)
 			{
 				tst.ImpulseAll(i * 0.1f, i * 0.1f);
@@ -159,8 +159,8 @@ int main(int argc, char* argv[])
 		else
 		{
 			Test::Test6 tst;
-			tst._InsertXMob(1000);
-			tst._InsertXPlayer(1000);
+			tst.InsertXMob(1000);
+			tst.InsertXPlayer(1000);
 			for (int i = 0; i < 10000; ++i)
 			{
 				tst.ImpulseAll(i * 0.1f, i * 0.1f);
@@ -412,18 +412,6 @@ int main(int argc, char* argv[])
 
 	}
 
-	case 14 :
-	{
-		int n = 1000;
-		while (--n, n != 0)
-		{
-			if (src)
-				Source::Sample::Exec();
-			else
-				Test::Sample::Exec();
-		}
-		return 1;
-	}
 	}
 	return -1;
 }
