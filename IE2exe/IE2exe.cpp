@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "Source.h"
 #include "Test.h"
+#include "Coiffeur.h"
 
 
 using namespace std;
@@ -143,7 +144,33 @@ int main(int argc, char* argv[])
 		}
 		return 1;
 	}
+	case 5:
 	case 6: 
+	{
+		if (src)
+		{
+			Source::Test6 tst;
+			tst.InsertXMob(1000);
+			tst.InsertXPlayer(1000);
+			for (int i = 0; i < 10000; ++i)
+			{
+				tst.ImpulseAll(i * 0.1f, i * 0.1f);
+			}
+
+		}
+		else
+		{
+			Test::Test6 tst;
+			tst.InsertXMob(1000);
+			tst.InsertXPlayer(1000);
+			for (int i = 0; i < 10000; ++i)
+			{
+				tst.ImpulseAll(i * 0.1f, i * 0.1f);
+			}
+
+		}
+		return 1;
+	}
 	{
 		if (src)
 		{
@@ -334,9 +361,9 @@ int main(int argc, char* argv[])
 			while (--n, n >= 0)
 			{
 				result += tst.SumAllDigits("0123456789");//45
-				result += tst.SumAllDigits("le chien a mangé 10 bonnes croquettes");
-				result += tst.SumAllDigits("qwettytuytiyo32`321532vcx456sf1è2`trey");
-				result += tst.SumAllDigits("Le Trône de fer (A Song of Ice and Fire) est une série de romans de fantasy de George R. R. Martin, dont l'écriture et la parution sont en cours. Martin a commencé à l'écrire en 1991 et le premier volume est paru en 1996 chez Bantam Books. Prévue à l'origine comme une trilogie, la série compte désormais cinq volumes publiés et deux autres sont attendus (les tomes ont ensuite été redécoupés dans la traduction française).  L'histoire se déroule dans un monde imaginaire où la société est de type féodal et où la magie et des créatures légendaires (telles que les dragons) ont existé mais sont censées avoir disparu. Trois intrigues principales s'y entremêlent : dans le royaume des Sept Couronnes, plusieurs maisons nobles rivalisent pour l'obtention du trône ; dans les contrées glacées situées au nord du royaume, une race de créatures supposée appartenir aux légendes se réveille ; et sur le continent oriental, la dernière héritière des Targaryen (la dynastie royale des Sept Couronnes renversée quinze ans auparavant), cherche à reconquérir le trône.  Chaque chapitre est présenté à travers le point de vue de l'un des personnages principaux. Les thèmes abordés sont plus réalistes que dans la fantasy traditionnelle. Les quelque vingt personnages principaux présentent souvent un comportement d'une moralité ambiguë, et les intrigues politiques et les renversements de situation sont fréquents.La violence et la sexualité occupent aussi des places importantes. ");
+				result += tst.SumAllDigits("le chien a mangï¿½ 10 bonnes croquettes");
+				result += tst.SumAllDigits("qwettytuytiyo32`321532vcx456sf1ï¿½2`trey");
+				result += tst.SumAllDigits("Le Trï¿½ne de fer (A Song of Ice and Fire) est une sï¿½rie de romans de fantasy de George R. R. Martin, dont l'ï¿½criture et la parution sont en cours. Martin a commencï¿½ ï¿½ l'ï¿½crire en 1991 et le premier volume est paru en 1996 chez Bantam Books. Prï¿½vue ï¿½ l'origine comme une trilogie, la sï¿½rie compte dï¿½sormais cinq volumes publiï¿½s et deux autres sont attendus (les tomes ont ensuite ï¿½tï¿½ redï¿½coupï¿½s dans la traduction franï¿½aise).  L'histoire se dï¿½roule dans un monde imaginaire oï¿½ la sociï¿½tï¿½ est de type fï¿½odal et oï¿½ la magie et des crï¿½atures lï¿½gendaires (telles que les dragons) ont existï¿½ mais sont censï¿½es avoir disparu. Trois intrigues principales s'y entremï¿½lent : dans le royaume des Sept Couronnes, plusieurs maisons nobles rivalisent pour l'obtention du trï¿½ne ; dans les contrï¿½es glacï¿½es situï¿½es au nord du royaume, une race de crï¿½atures supposï¿½e appartenir aux lï¿½gendes se rï¿½veille ; et sur le continent oriental, la derniï¿½re hï¿½ritiï¿½re des Targaryen (la dynastie royale des Sept Couronnes renversï¿½e quinze ans auparavant), cherche ï¿½ reconquï¿½rir le trï¿½ne.  Chaque chapitre est prï¿½sentï¿½ ï¿½ travers le point de vue de l'un des personnages principaux. Les thï¿½mes abordï¿½s sont plus rï¿½alistes que dans la fantasy traditionnelle. Les quelque vingt personnages principaux prï¿½sentent souvent un comportement d'une moralitï¿½ ambiguï¿½, et les intrigues politiques et les renversements de situation sont frï¿½quents.La violence et la sexualitï¿½ occupent aussi des places importantes. ");
 
 			}
 			return result;
@@ -349,9 +376,9 @@ int main(int argc, char* argv[])
 			while (--n, n >= 0)
 			{
 				result += tst.SumAllDigits("0123456789");//45
-				result += tst.SumAllDigits("le chien a mangé 10 bonnes croquettes");
-				result += tst.SumAllDigits("qwettytuytiyo32`321532vcx456sf1è2`trey");
-				result += tst.SumAllDigits("Le Trône de fer (A Song of Ice and Fire) est une série de romans de fantasy de George R. R. Martin, dont l'écriture et la parution sont en cours. Martin a commencé à l'écrire en 1991 et le premier volume est paru en 1996 chez Bantam Books. Prévue à l'origine comme une trilogie, la série compte désormais cinq volumes publiés et deux autres sont attendus (les tomes ont ensuite été redécoupés dans la traduction française).  L'histoire se déroule dans un monde imaginaire où la société est de type féodal et où la magie et des créatures légendaires (telles que les dragons) ont existé mais sont censées avoir disparu. Trois intrigues principales s'y entremêlent : dans le royaume des Sept Couronnes, plusieurs maisons nobles rivalisent pour l'obtention du trône ; dans les contrées glacées situées au nord du royaume, une race de créatures supposée appartenir aux légendes se réveille ; et sur le continent oriental, la dernière héritière des Targaryen (la dynastie royale des Sept Couronnes renversée quinze ans auparavant), cherche à reconquérir le trône.  Chaque chapitre est présenté à travers le point de vue de l'un des personnages principaux. Les thèmes abordés sont plus réalistes que dans la fantasy traditionnelle. Les quelque vingt personnages principaux présentent souvent un comportement d'une moralité ambiguë, et les intrigues politiques et les renversements de situation sont fréquents.La violence et la sexualité occupent aussi des places importantes. ");
+				result += tst.SumAllDigits("le chien a mangï¿½ 10 bonnes croquettes");
+				result += tst.SumAllDigits("qwettytuytiyo32`321532vcx456sf1ï¿½2`trey");
+				result += tst.SumAllDigits("Le Trï¿½ne de fer (A Song of Ice and Fire) est une sï¿½rie de romans de fantasy de George R. R. Martin, dont l'ï¿½criture et la parution sont en cours. Martin a commencï¿½ ï¿½ l'ï¿½crire en 1991 et le premier volume est paru en 1996 chez Bantam Books. Prï¿½vue ï¿½ l'origine comme une trilogie, la sï¿½rie compte dï¿½sormais cinq volumes publiï¿½s et deux autres sont attendus (les tomes ont ensuite ï¿½tï¿½ redï¿½coupï¿½s dans la traduction franï¿½aise).  L'histoire se dï¿½roule dans un monde imaginaire oï¿½ la sociï¿½tï¿½ est de type fï¿½odal et oï¿½ la magie et des crï¿½atures lï¿½gendaires (telles que les dragons) ont existï¿½ mais sont censï¿½es avoir disparu. Trois intrigues principales s'y entremï¿½lent : dans le royaume des Sept Couronnes, plusieurs maisons nobles rivalisent pour l'obtention du trï¿½ne ; dans les contrï¿½es glacï¿½es situï¿½es au nord du royaume, une race de crï¿½atures supposï¿½e appartenir aux lï¿½gendes se rï¿½veille ; et sur le continent oriental, la derniï¿½re hï¿½ritiï¿½re des Targaryen (la dynastie royale des Sept Couronnes renversï¿½e quinze ans auparavant), cherche ï¿½ reconquï¿½rir le trï¿½ne.  Chaque chapitre est prï¿½sentï¿½ ï¿½ travers le point de vue de l'un des personnages principaux. Les thï¿½mes abordï¿½s sont plus rï¿½alistes que dans la fantasy traditionnelle. Les quelque vingt personnages principaux prï¿½sentent souvent un comportement d'une moralitï¿½ ambiguï¿½, et les intrigues politiques et les renversements de situation sont frï¿½quents.La violence et la sexualitï¿½ occupent aussi des places importantes. ");
 			}
 			return result;
 		}
@@ -410,6 +437,19 @@ int main(int argc, char* argv[])
 		}
 		return 0;
 
+	}
+
+	case 13:
+	{
+		SalonDeCoiffure salon;
+		salon.Start();
+		while (!salon.Closing())
+		{
+			salon.AddCustomer();
+		}
+		salon.Close();
+
+		break;
 	}
 
 	}

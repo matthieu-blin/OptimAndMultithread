@@ -44,6 +44,11 @@ TEST_CASE("Classic issue 2", "[Optim]")
 
 TEST_CASE("around vtable ", "[Optim]")
 {
+	EXEC_AND_COMPARE_DURATION(5);
+}
+
+TEST_CASE("around vtable bis ", "[Optim]")
+{
 	EXEC_AND_COMPARE_DURATION(6);
 }
 
@@ -72,4 +77,8 @@ TEST_CASE("Test12", "[Optim]")
 	EXEC_AND_COMPARE_DURATION(12);
 }
 
+TEST_CASE("Multithread", "[Optim]")
+{
+	EXEC_AND_COMPARE_DURATION(13);
+}
 
