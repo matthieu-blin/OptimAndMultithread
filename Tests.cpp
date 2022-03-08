@@ -77,4 +77,8 @@ TEST_CASE("Test12", "[Optim]")
 	EXEC_AND_COMPARE_DURATION(12);
 }
 
+TEST_CASE("Multithread", "[Optim]")
+{
+	EXEC_AND_COMPARE_DURATION(13);
+}
 

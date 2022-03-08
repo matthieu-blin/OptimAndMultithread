@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "Source.h"
 #include "Test.h"
+#include "Coiffeur.h"
 
 
 using namespace std;
@@ -436,6 +437,19 @@ int main(int argc, char* argv[])
 		}
 		return 0;
 
+	}
+
+	case 13:
+	{
+		SalonDeCoiffure salon;
+		salon.Start();
+		while (!salon.Closing())
+		{
+			salon.AddCustomer();
+		}
+		salon.Close();
+
+		break;
 	}
 
 	}
