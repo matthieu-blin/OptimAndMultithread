@@ -8,8 +8,8 @@
 #include <set>
 #include <functional>
 #include <string>
+#include <sstream>
 #include <stack>
-#include <sstream> 
 
 //Source code of what you should optimize
 //when a class is prefixed by _, you CANNOT modify it.
@@ -38,8 +38,10 @@ namespace Test
 
 	private:
 
-		std::set<_Player> players;
+		//le set ici n'était pas adapté
+		std::vector<_Player> players;
 	};
+
 
 	//TEST 12 ////////////////////////////////////////////////////////////////////////
 	class Test2
@@ -71,7 +73,8 @@ namespace Test
 		};
 
 		Test2() {};
-		void PushMob(const _Mob _newMob);
+		//passage par reference éviter la copy, notamment de la string qui peut être cher 
+		void PushMob(const _Mob& _newMob);
 		void PopMob();
 
 	private:
@@ -116,6 +119,7 @@ namespace Test
 			_pi_8, // pi/8
 			_pi_16 // pi/16
 		};
+		float frac[6]{ 6.28000021f, 3.14000010f, 1.57000005f, 0.785000026f, 0.392500013f, 0.196250007f };
 		float _PI = 3.14f;
 		float FractionOfPi(fracOfPi p);
 	};
@@ -162,6 +166,7 @@ namespace Test
 	{
 	public:
 
+		//test 17 un appel de fonction qui ne sert à rien dans l'algo
 		Test7() {};
 		struct _Player
 		{
@@ -220,13 +225,10 @@ namespace Test
 
 		//retrieve the most common item possessed by players
 		ItemUID  RetrieveMostCommon() const;
-
-
-
 	private:
 		std::unordered_map< ItemUID, _Item> _items;
-
 		std::list<_Inventory> m_playerInventory;
 
 	};
+
 }
