@@ -1,40 +1,24 @@
-========================================================================
-    CONSOLE APPLICATION : IE2exe Project Overview
-========================================================================
 
-AppWizard has created this IE2exe application for you.
+Optimisation : 9 points (1pt / test pour les 7 premiers cas, 2 points pour le 8eme) 
 
-This file contains a summary of what you will find in each of the files that
-make up your IE2exe application.
+Pensez bien à faire vos test en Release x64 !
+
+timing à titre indicatif sur mon ordi actuel
+Test : src duration : 557 (-1575015264), tst duration : 48 (-1575015264)
+Test2 : src duration : 607 (1), tst duration : 473 (1)
+Test3 : src duration : 742 (1848118418), tst duration : 574 (1848118418)
+Test4 : src duration : 283 (20606951), tst duration : 170 (20606951)
+Test5 : src duration : 176 (4000000), tst duration : 90 (4000000)
+Test6 : src duration : 86 (-2147483648), tst duration : 25 (-2147483648)
+Test7 : src duration : 1276 (10034), tst duration : 975 (10034)
+Test8 : src duration : 99 (2595), tst duration : 34 (2595)
+
+Multithread : 6 Points 
+Il y a un barème basé sur les connaissances : 
+-Savoir utiliser correctement un thread
+-Savoir utiliser correctement une barrière mémoire
+-Faire une analyse correcte de la problématique
+-Avoir un algorithme complet et fonctionnel
 
 
-IE2exe.vcxproj
-    This is the main project file for VC++ projects generated using an Application Wizard.
-    It contains information about the version of Visual C++ that generated the file, and
-    information about the platforms, configurations, and project features selected with the
-    Application Wizard.
-
-IE2exe.vcxproj.filters
-    This is the filters file for VC++ projects generated using an Application Wizard. 
-    It contains information about the association between the files in your project 
-    and the filters. This association is used in the IDE to show grouping of files with
-    similar extensions under a specific node (for e.g. ".cpp" files are associated with the
-    "Source Files" filter).
-
-IE2exe.cpp
-    This is the main application source file.
-
-/////////////////////////////////////////////////////////////////////////////
-Other standard files:
-
-StdAfx.h, StdAfx.cpp
-    These files are used to build a precompiled header (PCH) file
-    named IE2exe.pch and a precompiled types file named StdAfx.obj.
-
-/////////////////////////////////////////////////////////////////////////////
-Other notes:
-
-AppWizard uses "TODO:" comments to indicate parts of the source code you
-should add to or customize.
-
-/////////////////////////////////////////////////////////////////////////////
+Vous devrez rendre un fichier zip avec ce Readme, Test.h Test.cpp et les fichiers nécessaires au RepasChinois (vous ne devez pas changer le test du repas chinois)

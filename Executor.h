@@ -10,7 +10,7 @@ class Executor
 {
 public :
 	Executor();
-	bool exec(char* _cmd, long long* _durationInMs);
+	int exec(char* _cmd, long long* _durationInMs);
 private :
 	std::chrono::time_point<std::chrono::system_clock> start, end;
 	STARTUPINFOA si;

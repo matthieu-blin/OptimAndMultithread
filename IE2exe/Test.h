@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 #include <vector>
 #include <algorithm>
 #include <unordered_map>
@@ -7,346 +8,224 @@
 #include <set>
 #include <functional>
 #include <string>
+#include <stack>
+#include <sstream> 
 
 //Source code of what you should optimize
+//when a class is prefixed by _, you CANNOT modify it.
+//when a function or a data member is prefied by a _, you CANNOT modify it.
+//Adding function/member/changing type/parameter of a function for a modifiable class is valid
+//parameters follow the _ code guideline, BUT can be modified inside a function without _ prefix.
 namespace Test
 {
-//TEST 0 ////////////////////////////////////////////////////////////////////////
-	class Test0
-	{
-	public :
-		class Player
-		{
-		public:
-			Player();
-			Player(const Player& _player);
-			Player(Player&& _player);
-			~Player();
-		private :
-			char* name = nullptr;
-			int life = 0;
-		};
-
-		//this function could be call X times
-		void _GenerateNewPlayer();
-	private :
-		std::vector<Player> m_players;
-	};
-
-
-//TEST 1 ////////////////////////////////////////////////////////////////////////
+	//TEST 11 ////////////////////////////////////////////////////////////////////////
 	class Test1
-	{
-	public:
-		struct _Data
-		{
-			long long guid;
-			char* binaryData;
-		};
-		void FillWithFakeResources(int _nbFake);
-		char* FindData(long long _guid);
-
-	private :
-		//solution : since we want to load all at once, then Finding Data N times
-		//the hashmap with its O(1) access in reading is most appropriate
-		std::unordered_map<long long , _Data> m_resources;
-	};
-
-//TEST 2 ////////////////////////////////////////////////////////////////////////
-
-	class Test2
-	{
-	public:
-		struct _EloPlayer
-		{
-			long long guid;
-			int eloScore;
-			friend  bool operator<(const _EloPlayer& l, const _EloPlayer& r)
-			{
-				return l.eloScore < r.eloScore;
-			}
-		};
-
-
-		void InsertPlayer(long long _guid, int _eloScore );
-		//find the a player with a elo score < to our score +10 max
-		long long FindNearestAdversary(	int _eloScore);
-
-	private :
-		std::set<_EloPlayer> m_eloPlayers;
-	};
-
-//TEST 3 ////////////////////////////////////////////////////////////////////////
-	class Test3
-	{
-	public:
-		struct _Vector3
-		{
-			float x;
-			float y;
-			float z;
-		};
-
-		void InsertPosition(_Vector3 _v);
-
-	private :
-		std::vector<_Vector3> m_positions;
-	};
-
-
-//TEST 4 ////////////////////////////////////////////////////////////////////////
-	class Test4
 	{
 	public:
 		struct _Player
 		{
-			_Player();
-			_Player(const _Player& _player);
-			~_Player();
-			char* name = nullptr;
-			int life = 100;
+			_Player(int _ID) : Uid(_ID) { m_totalDeath = rand() % 9999; }
+			int Uid = 0;
+			unsigned int m_totalDeath = 0;
+			bool operator<(const _Player& _player) const {
+				return Uid < _player.Uid;
+			};
 		};
 
-		void InsertNewPlayerAtConditions(const std::vector<std::function<bool()>>& _conditions);
-	private:
-		std::vector<_Player> m_players;
-	};
-
-//TEST 6 ////////////////////////////////////////////////////////////////////////
-
-	class _Test6PhysicableI
-	{
-	public:
-		virtual void Impulse(float _fx, float _fy) = 0;
-		virtual bool IsPlayer() = 0;
-	protected:
-		float m_X = 0.f;
-		float m_Y = 0.f;
-	};
-	class _Test6Player : public _Test6PhysicableI
-	{
-	public:
-		virtual bool IsPlayer() { return true; }
-		void Impulse(float _x, float _y) override
-		{
-			m_X += _x;
-			m_Y += _y;
-		}
-	};
-
-	class _Test6Mob : public _Test6PhysicableI
-	{
-	public : 
-		virtual bool IsPlayer() { return false; }
-		//impulse reversed for no reason and we dont care
-		void Impulse(float _x, float _y) override
-		{
-			m_X -= _x;
-			m_Y -= _y;
-		}
-	};	class Test6
-	{
-	public:
-		void InsertXMob(int x);
-		void InsertXPlayer(int x);
-		void ImpulseAll(float _fx, float _fy);
-
-	private :
-
-		std::vector<_Test6Mob*> m_mobs;
-		std::vector<_Test6Player*> m_players;
-	};
-
-
-	//TEST 6b ////////////////////////////////////////////////////////////////////////
-
-	class _Test6bPlayer
-	{
-	public:
-		void Impulse(float _x, float _y) 
-		{
-			m_X += _x;
-			m_Y += _y;
-		}
-	private:
-		float m_X = 0.f;
-		float m_Y = 0.f;
-	};
-
-	class _Test6bMob 
-	{
-	public:
-		//impulse reversed for no reason and we dont care
-		void Impulse(float _x, float _y) 
-		{
-			m_X -= _x;
-			m_Y -= _y;
-		}
-	private:
-		float m_X = 0.f;
-		float m_Y = 0.f;
-	};	
-	class Test6b
-	{
-	public:
-		void InsertXMob(int x);
-		void InsertXPlayer(int x);
-		void ImpulseAll(float _fx, float _fy);
+		Test1(int _nb);
+		unsigned long long ComputeDeathStats();
 
 	private:
 
-		std::vector<_Test6bMob*> m_mobs;
-		std::vector<_Test6bPlayer*> m_players;
-	};
-
-	//TEST 7 ////////////////////////////////////////////////////////////////////////
-	class Test7
-	{
-		enum class _ComponentType{
-			Transform = 0,
-			MeshRenderer,
-			GUID,
-		};
-		class _Component
-		{
-		public :
-			_Component(_ComponentType type) : m_type(type) {};
-			_ComponentType GetType() const { return m_type; }
-		private :
-			_ComponentType m_type;
-		};
-		class _Transform : public _Component
-		{
-		public : 
-			_Transform() : _Component(_ComponentType::Transform) {
-				x = std::rand();
-				y = std::rand();
-			}
-			void Move(int _x, int _y) { x = _x; y = _y; }
-		private :
-			int x;
-			int y;
-		};
-		class _MeshRender : public _Component
-		{
-		public :
-			_MeshRender() : _Component(_ComponentType::MeshRenderer) {
-				meshPath = "dummyFolder" + std::to_string(std::rand());
-			}
-			std::string meshPath;
-		};
-		class _GUID : public _Component
-		{
-		public :
-			_GUID() : _Component(_ComponentType::GUID) { guid = std::rand(); }
-			int guid;
-		};
-		class Entity
-		{
-		public:
-			Entity(_Component** _components, int _nb);
-			template <typename T>
-			T* GetComponentT(_ComponentType _type)
-			{
-				return static_cast<T*>(GetComponent(_type));
-
-			}
-			_Component* GetComponent(_ComponentType _type)
-			{
-				for (auto* comp : m_components)
-				{
-					if (comp->GetType() == _type)
-						return comp;
-				}
-				return nullptr;
-			}
-			template<> 
-			_Transform* GetComponentT(_ComponentType _type) {
-				if (!m_transform)
-					m_transform = static_cast<_Transform*>(GetComponent(_type));
-				return m_transform;
-			}
-
-		private :
-			std::vector<_Component*> m_components;
-			_Transform* m_transform = nullptr;
-		};
-	public:
-		void _InsertXEntity(int x);
-		void MoveAllEntities(int x, int y);
-
-	private :
-		std::vector<Entity*> m_entities;
-	};
-
-//TEST 8 ////////////////////////////////////////////////////////////////////////
-	class Test8
-	{
-	public:
-#if _DEBUG
-		static const int M_SIZE = 128;
-#else
-		static const int M_SIZE = 256;
-#endif
-		typedef float LargeMatrix[M_SIZE][M_SIZE];
-		static void _RandMatrix(LargeMatrix& A);
-		static void MultiplyMatrix(const LargeMatrix& A, const LargeMatrix& B, LargeMatrix& R);
-
-	};
-
-	
-//TEST 9 ////////////////////////////////////////////////////////////////////////
-	class Test9
-	{
-	public :
-		void _InitializeRandomValue();
-		unsigned char  FindNearestRandom(unsigned char _value);
-	private :
-		std::vector<unsigned char> m_randomValues;
-	};
-
-//TEST 10 ////////////////////////////////////////////////////////////////////////
-	class Test10
-	{
-	public :
-		class IOResource
-		{
-        public:
-			IOResource(const char* _path);
-            ~IOResource();
-
-			unsigned long _UID() const { return uid; }
-			char* _GetData() const { return data; }
-			char* LoadAndGetData();
-            static unsigned long _Hash(const char *str);
-
-		private:
-			void _LoadDataSync();
-			unsigned long uid;
-            char* data = nullptr;
-            
-		};
-
-        void _InitResource(const char** paths, int _nb);
-        char* GetData(const char* _path);
-	private :
-
-		std::unordered_map<unsigned long long, IOResource*> m_data;
-	};
-
-	//TEST 11 ////////////////////////////////////////////////////////////////////////
-	class Test11
-	{
-	public:
-		int SumAllDigits(const char* _text);
+		std::set<_Player> players;
 	};
 
 	//TEST 12 ////////////////////////////////////////////////////////////////////////
-	class Test12
+	class Test2
 	{
 	public:
-		unsigned long filterArray(unsigned long* _pArray, unsigned long _size);
-	}; 
+		struct _Mob
+		{
+			_Mob(int _index) {
+				life = rand() % 999 + 1;
+				archetype = rand() % 5;
+				name = _generateName(archetype); name += std::to_string(_index);
+			}
+			unsigned int life = 0;
+			int archetype = 0;
+			std::string name;
+			static const char* _generateName(int archetype)
+			{
+				switch (archetype)
+				{
+				case 0: return "super mega power ranger bleu";
+				case 1: return "super mega power ranger rouge";
+				case 2: return "super mega power ranger vert";
+				case 3: return "super mega power ranger jaune";
+				case 4: return "super mega power ranger blanc";
+				default: return "super mega power ranger noir";
+				}
+			}
 
-	
+		};
+
+		Test2() {};
+		void PushMob(const _Mob _newMob);
+		void PopMob();
+
+	private:
+
+		std::stack<_Mob> _mobs;
+	};
+
+	//TEST 13 ////////////////////////////////////////////////////////////////////////
+	class Test3
+	{
+	public:
+
+		Test3() {};
+		struct Replica
+		{
+			int Uid = 0;
+			int depth = 0;
+			Replica* _parent = nullptr;
+			std::vector<Replica*> _children;
+			long long ComputeCompositeID();
+		};
+
+		void _PushReplica(Replica* _entity) { _replicas.push_back(_entity); }
+
+	private:
+		std::vector<Replica*> _replicas;
+
+	};
+
+	//TEST 14 ////////////////////////////////////////////////////////////////////////
+	class Test4
+	{
+	public:
+
+		Test4() {};
+		enum class fracOfPi
+		{
+			_2pi,  // 2pi
+			_pi,   // pi
+			_pi_2, // pi/2
+			_pi_4, // pi/4
+			_pi_8, // pi/8
+			_pi_16 // pi/16
+		};
+		float _PI = 3.14f;
+		float FractionOfPi(fracOfPi p);
+	};
+
+	//TEST 15 ////////////////////////////////////////////////////////////////////////
+	class Test5
+	{
+	public:
+
+		Test5() {};
+		void _CreateForest(int _nbTrees, float _minHeight, float _maxHeight);
+		struct _Tree
+		{
+			int x = 0;
+			int y = 0;
+			float height = 1;
+		};
+
+		_Tree& FindOneOfTallestTree();
+
+
+	private:
+		_Tree _null{ 0,0, 0 };
+		std::vector<_Tree> _forest;
+		int _nbTrees = 0;
+		float _minHeight = 0;
+		float _maxHeight = 0;
+
+	};
+
+	//TEST 16 ////////////////////////////////////////////////////////////////////////
+	class Test6
+	{
+	public:
+
+		Test6(int _n);
+		std::vector<int> m_valuesA;
+		std::vector<int> m_valuesB;
+		int Increment();
+	};
+
+	//TEST 17 ////////////////////////////////////////////////////////////////////////
+	class Test7
+	{
+	public:
+
+		Test7() {};
+		struct _Player
+		{
+			int index = 0;
+			int skill_1 = 0;
+			int skill_2 = 0;
+			int skill_3 = 0;
+		};
+
+
+		void _Reserve(size_t _nb) { _players.reserve(_nb); }
+		void _InsertPlayer(const _Player& _p) { _players.push_back(_p); }
+
+		int FindSkillestPlayer();
+
+
+	private:
+		std::vector<_Player> _players;
+
+	};
+
+	//TEST 18 ////////////////////////////////////////////////////////////////////////
+	class Test8
+	{
+	public:
+
+		Test8() {};
+		using ItemUID = unsigned int;
+		struct _Item
+		{
+			_Item(ItemUID _ID = 0) : Uid(_ID) {
+				//we will use uid to look for correct icon, texture, stats, etc.
+				std::stringstream oss;
+				oss << "Icon_" << Uid << ".png";
+				iconPath = oss.str();
+			}
+			ItemUID Uid = 0;
+			//for simulation of those stats
+			std::string iconPath;
+		};
+
+		struct _Inventory {
+
+			void AddItem(ItemUID _Uid) { m_inventory.insert(_Uid); }
+			const std::set<ItemUID>& Items() const { return m_inventory; }
+			std::set<ItemUID> m_inventory;
+		};
+
+		void _AddItem(const _Item item) { _items[item.Uid] = item; }
+		void _AddInventory(const _Inventory& _inventory) {
+			m_playerInventory.push_back(_inventory);
+		}
+
+		bool _IsValidItem(ItemUID _Uid) const { return _items.find(_Uid) != _items.end(); }
+
+
+		//retrieve the most common item possessed by players
+		ItemUID  RetrieveMostCommon() const;
+
+
+
+	private:
+		std::unordered_map< ItemUID, _Item> _items;
+
+		std::list<_Inventory> m_playerInventory;
+
+	};
 }

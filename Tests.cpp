@@ -11,70 +11,46 @@ long long src_duration = 0;
 long long tst_duration = 0;
 
 #define EXEC_AND_COMPARE_DURATION(num) \
-	CHECK(X.exec("IE2exe.exe src " #num, &src_duration)); \
-	CHECK(X.exec("IE2exe.exe tst " #num, &tst_duration)); \
-	printf("Test " #num " : src duration : %I64d , tst duration : %I64d\n", src_duration, tst_duration); \
+	int s = X.exec("IE2exe.exe src " #num, &src_duration); \
+	int t = X.exec("IE2exe.exe tst " #num, &tst_duration); \
+	printf("Test " #num " : src duration : %I64d (%d), tst duration : %I64d (%d) \n", src_duration, s, tst_duration, t); \
+	CHECK(s == t );\
 	CHECK(src_duration > tst_duration)
 
-TEST_CASE("Fastest than copy ?", "[Optim]")
-{
-	EXEC_AND_COMPARE_DURATION(0);
-}
-
-TEST_CASE("Around Container 1", "[Optim]")
+TEST_CASE("Test1", "[Optim]")
 {
 	EXEC_AND_COMPARE_DURATION(1);
 }
-
-TEST_CASE("Around Container 2", "[Optim]")
+TEST_CASE("Test2", "[Optim]")
 {
 	EXEC_AND_COMPARE_DURATION(2);
 }
-
-TEST_CASE("Classic issue", "[Optim]")
+TEST_CASE("Test3", "[Optim]")
 {
 	EXEC_AND_COMPARE_DURATION(3);
 }
-
-TEST_CASE("Classic issue 2", "[Optim]")
+TEST_CASE("Test4", "[Optim]")
 {
 	EXEC_AND_COMPARE_DURATION(4);
 }
-
-
-TEST_CASE("around vtable ", "[Optim]")
+TEST_CASE("Test5", "[Optim]")
 {
 	EXEC_AND_COMPARE_DURATION(5);
 }
-
-TEST_CASE("around vtable bis ", "[Optim]")
+TEST_CASE("Test6", "[Optim]")
 {
 	EXEC_AND_COMPARE_DURATION(6);
 }
-
-TEST_CASE("Classic issue 4, the come back", "[Optim]")
+TEST_CASE("Test7", "[Optim]")
 {
 	EXEC_AND_COMPARE_DURATION(7);
 }
-
-TEST_CASE("About Memory", "[Optim]")
+TEST_CASE("Test8", "[Optim]")
 {
 	EXEC_AND_COMPARE_DURATION(8);
 }
-
-TEST_CASE("Classic issue 5", "[Optim]")
+TEST_CASE("Multithread", "[MultiThread]")
 {
-	EXEC_AND_COMPARE_DURATION(9);
+	CHECK(X.exec("IE2exe.exe tst  21", &tst_duration) == 1); 
 }
-
-TEST_CASE("Test11", "[Optim]")
-{
-	EXEC_AND_COMPARE_DURATION(11);
-}
-
-TEST_CASE("Test12", "[Optim]")
-{
-	EXEC_AND_COMPARE_DURATION(12);
-}
-
 

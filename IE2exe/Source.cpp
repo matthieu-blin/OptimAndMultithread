@@ -1,321 +1,177 @@
 #include "stdafx.h"
 #include "Source.h"
 #include <algorithm>
-#include <array>
+#include <cassert>
 
 namespace Source
 {
+	//TEST 11 ////////////////////////////////////////////////////////////////////////
 
-//TEST 0 ////////////////////////////////////////////////////////////////////////
-
-	Test0::Player::Player()
+	Test1::Test1(int _nb)
 	{
-		name = (char*)malloc(sizeof(char) * 10);
-		for (int i = 0; i < 9; ++i)
-			name[i] = ((float)std::rand() / RAND_MAX) * 26.f + 97; //generate rubbish char 
-		name[9] = '\0';
-	}
-
-	Test0::Player::Player(const Player& _player)
-	{
-		name = (char*)malloc(sizeof(char) * 10);
-		memcpy(name, _player.name, sizeof(_player.name));
-		life = _player.life;
-	}
-
-	Test0::Player::~Player()
-	{
-		free(name);
-		life = 0;
-	}
-
-	void Test0::_GenerateNewPlayer()
-	{
-		Player player;
-		m_players.push_back(player);
-	}
-
-//TEST 1 ////////////////////////////////////////////////////////////////////////
-
-	void Test1::FillWithFakeResources(int _nbFake)
-	{
-		for (int i = 0; i < _nbFake; ++i)
-			m_resources.push_back(_Data{ std::rand(), nullptr });
-	}
-
-	char* Test1::FindData(long long _guid)
-	{
-		auto iFound = std::find_if(m_resources.begin(), m_resources.end(),
-			[_guid](const _Data& _data)->bool {
-			return _data.guid == _guid;
-		}
-		);
-		if (iFound != m_resources.end())
-			return iFound->binaryData;
-		return nullptr;
-	}
-
-//TEST 2 ////////////////////////////////////////////////////////////////////////
-
-	void Test2::InsertPlayer(long long _guid, int _eloScore)
-	{
-		m_eloPlayers.push_back(_EloPlayer{ _guid, _eloScore });
-	}
-
-	long long Test2::FindNearestAdversary(int _eloScore)
-	{
-		_EloPlayer foundPlayer{-1, -1};
-		for (auto& target : m_eloPlayers)
+		for (int i = 0; i < _nb; ++i)
 		{
-			if (target.eloScore > foundPlayer.eloScore && target.eloScore <= _eloScore + 10)
+			players.insert(_Player(i));
+		}
+	}
+
+	unsigned long long Test1::ComputeDeathStats()
+	{
+		unsigned long long result = 0;
+		for (const auto& pl : players)
+		{
+			result += pl.m_totalDeath;
+		}
+		return result;
+	}
+
+	//TEST 12 ////////////////////////////////////////////////////////////////////////
+
+	void Test2::PushMob(const _Mob _newMob)
+	{
+		_mobs.push(_newMob);
+	}
+
+	void Test2::PopMob()
+	{
+		_mobs.pop();
+	}
+
+	//TEST 13 ////////////////////////////////////////////////////////////////////////
+
+	long long Test3::Replica::ComputeCompositeID()
+	{
+		if (_parent == nullptr)
+		{
+			return Uid;
+		}
+		return Uid + _parent->ComputeCompositeID();
+	}
+
+	//TEST 14 ////////////////////////////////////////////////////////////////////////
+
+	float Test4::FractionOfPi(Test4::fracOfPi p)
+	{
+		switch (p)
+		{
+		case fracOfPi::_2pi :
+			return 2 * _PI;
+		case fracOfPi::_pi :
+			return  _PI;
+		case fracOfPi::_pi_2 :
+			return _PI / 2.f;
+		case fracOfPi::_pi_4 :
+			return _PI / 4.f;
+		case fracOfPi::_pi_8 :
+			return _PI / 8.f;
+		case fracOfPi::_pi_16 :
+			return _PI / 16.f;
+		default :
+			return 0.0f;
+		}
+	}
+
+	//TEST 15 ////////////////////////////////////////////////////////////////////////
+
+
+	void Test5::_CreateForest(int nbTrees, float minHeight, float maxHeight)
+	{
+		_nbTrees = nbTrees;
+		_forest.reserve(_nbTrees);
+		_minHeight = minHeight;
+		_maxHeight = maxHeight;
+
+
+		for (int i = 0; i < _nbTrees; ++i)
+		{
+			int rand = std::rand();
+			_forest.push_back(_Tree{ (rand & 0xFF), ((rand & 0xFF00) >> 8), minHeight + (rand % 11) * 0.1f * (maxHeight - minHeight) });
+		}
+	}
+
+	Test5::_Tree& Test5::FindOneOfTallestTree()
+	{
+		_Tree& result = _null;
+		for (int i = 0; i < _nbTrees; ++i)
+		{
+			if (result.height <= _forest[i].height)
 			{
-				foundPlayer = target; 
+				result = _forest[i];
 			}
 		}
-		return foundPlayer.guid;
+		return result;
 	}
 
-//TEST 3 ////////////////////////////////////////////////////////////////////////
+	//TEST 16 ////////////////////////////////////////////////////////////////////////
 	
-	void Test3::InsertPosition(const _Vector3& _v)
+	Test6::Test6(int _n)
 	{
-		m_positions.push_back(_v);
+		m_valuesA.resize(_n);
+		m_valuesB.resize(_n);
 	}
-
-//TEST 4 ////////////////////////////////////////////////////////////////////////
-	Test4::_Player::_Player()
+	int Test6::Increment()
 	{
-		name = (char*)malloc(sizeof(char) * 10);
-		for (int i = 0; i < 9; ++i)
-			name[i] = ((float)std::rand() / RAND_MAX) * 26.f + 97; //generate rubbish char 
-		name[9] = '\0';
-	}
-
-	Test4::_Player::_Player(const _Player& _player)
-	{
-		name = (char*)malloc(sizeof(char) * 10);
-		memcpy(name, _player.name, sizeof(_player.name));
-		life = _player.life;
-	}
-
-	Test4::_Player::~_Player()
-	{
-		free(name);
-	}
-
-	void Test4::InsertNewPlayerAtConditions(const std::vector<std::function<bool()>>& _conditions)
-	{
-		_Player newPlayer;
-		for (const auto& condition : _conditions)
+		int sum = 0;
+		for (int i = 0; i < m_valuesA.size(); ++i)
 		{
-			if (!condition())
-				return;
+			m_valuesA[i]+=1;
+			m_valuesB[i]+=2;
+			sum += m_valuesA[i] + m_valuesB[i];
 		}
-		m_players.push_back(newPlayer);
+		return sum;
 
 	}
-//TEST 6 ////////////////////////////////////////////////////////////////////////
 
-	void Test6::InsertXMob(int x)
-	{
-		for (int i = 0; i < x; ++i)
-			m_physicable.push_back(new _Test6Mob());
-	}
 
-	void Test6::InsertXPlayer(int x)
-	{
-		for (int i = 0; i < x; ++i)
-			m_physicable.push_back(new _Test6Player());
-	}
+	//TEST 17 ////////////////////////////////////////////////////////////////////////
 
-	void Test6::ImpulseAll(float _fx, float _fy)
+	int Test7::FindSkillestPlayer()
 	{
-		//first players
-		for (auto* p : m_physicable)
+		int result = 0;
+		float sum = 0;
+		for (auto& p : _players)
 		{
-			if(p->IsPlayer())
-				p->Impulse(_fx, _fy);
-		}
-
-		//then mobs
-		for (auto* p : m_physicable)
-		{
-			if(!p->IsPlayer())
-				p->Impulse(_fx, _fy);
-		}
-	}
-
-//TEST 7 ////////////////////////////////////////////////////////////////////////
-	Test7::Entity::Entity(_Component** _components, int _nb)
-	{
-		m_components = std::vector<_Component*>(_components, _components + _nb);
-	}
-
-	void Test7::_InsertXEntity(int x)
-	{
-		for (int i = 0; i < x; ++i)
-		{
-			_Component* defaultComponents[] = { new _MeshRender(), new _Transform(), new _GUID() };
-			m_entities.push_back(new Entity(defaultComponents, 3));
-		}
-	}
-
-	void Test7::MoveAllEntities(int x, int y)
-	{
-		for (auto* entity : m_entities)
-		{
-			auto* t = entity->GetComponentT<_Transform>(_ComponentType::Transform);
-			t->Move(x, y);
-		}
-	}
-
-//TEST 8 ////////////////////////////////////////////////////////////////////////
-
-	void Test8::_RandMatrix(LargeMatrix& A)
-	{
-		for (int i = 0; i < M_SIZE; i++)
-			for (int j = 0; j < M_SIZE; j++)
-				A[i][j] = std::rand() * 1.f;
-	}
-
-	
-	void Test8::MultiplyMatrix(const LargeMatrix& A, const LargeMatrix& B, LargeMatrix& R)
-	{
-		for (int i = 0; i < M_SIZE; i++)
-			for (int j = 0; j < M_SIZE; j++)
-				for (int k = 0; k < M_SIZE; k++)
-					R[i][j] += A[i][k] * B[k][j];
-	}
-
-
-//TEST 9 ////////////////////////////////////////////////////////////////////////
-	void Test9::_InitializeRandomValue()
-	{
-		m_randomValues.resize(256);
-		for (int i = 0; i < 256; ++i)
-		{
-			unsigned char value = std::rand() %  256;
-			while (std::find(m_randomValues.begin(), m_randomValues.begin() + i, value) !=  m_randomValues.begin() + i )
-				value++;
-			m_randomValues[i]=value;
-		}
-	}
-
-	unsigned char Test9::FindNearestRandom(unsigned char _value)
-	{
-		unsigned char currentGap = 255;
-		unsigned char nearest = 255;
-		
-		for (unsigned char v : m_randomValues)
-		{
-			auto gap = std::abs(_value - v);
-			if(gap < currentGap);
+			float _sum = std::sqrtf(p.skill_1 + (p.skill_2 * 2) + (p.skill_3* 3 ));
+			if ( sum < _sum )
 			{
-				currentGap = gap;
-				nearest = v;
+				result = p.index;
+				sum = _sum;
 			}
 		}
-		return nearest;
-	}
-
-//TEST 10 ////////////////////////////////////////////////////////////////////////
-
-    Test10::IOResource::IOResource(const char* _path)
-    {
-		uid = _Hash(_path);
-        _LoadDataSync();
-    }
-    
-    void Test10::IOResource::_LoadDataSync()
-    {
-        //fake code
-        unsigned int size = std::rand() % 32384 ;
-        data = (char*)malloc(size);
-        for (auto i = 0; i < size; ++i)
-        {
-            data[i] = std::rand() % 255;
-        }
-    }
-
-    Test10::IOResource::~IOResource()
-    {
-        free(data);
-    }
-	
-	unsigned long Test10::IOResource::_Hash(const char *str)
-    {
-        unsigned long hash = 5381;
-        int c;
-
-        while (c = *str++)
-            hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-
-        return hash;
-    }
-
-    void Test10::_InitResource(const char** paths, int _nb)
-    {
-        for (int i = 0; i < _nb; ++i)
-        {
-			auto* data = new IOResource(paths[i]);
-			m_data[data->_UID()] = data;
-        }
-    }
-
-    char* Test10::GetData(const char* _path)
-    {
-		auto iData = m_data.find(IOResource::_Hash(_path));
-		if (iData != m_data.end())
-		{
-			return iData->second->_GetData();
-		}
-		return nullptr;
-    }
-
-
-	int Test11::SumAllDigits(const char* _text)
-	{
-		char* pTextTP;
-		pTextTP = new char[2];
-		int retval = 0;
-		for (int i = 0; i < strlen(_text); i++)
-		{
-			pTextTP[0] = _text[i];
-			pTextTP[1] = 0;
-			if (atoi(pTextTP) > 0)
-			{
-				retval = retval + atoi(pTextTP);
-			}
-
-		}
-		delete pTextTP;
-		return retval;
+		return result;
 	}
 
 
-	unsigned long Test12::filterArray(unsigned long* _pArray, unsigned long _size)
-	{
-		unsigned long newsize = _size;
 
-		for (unsigned long i = 0; i < newsize; i++)
+	Test8::ItemUID Test8::RetrieveMostCommon() const {
+		ItemUID rarest = 0;
+		unsigned int count = 0;
+		for (const auto& inventory : m_playerInventory)
 		{
-			if (_pArray[i] != (_pArray[i] / 2) * 2)
+			for (const auto& uid : inventory.Items())
 			{
-				for (unsigned long j = 0; j < _size - 1; j++)
+				int currentCount = 0;
+				for (const auto& other : m_playerInventory)
 				{
-					if (j >= i)
+					if (&other == &inventory)
+						continue;
+					for (const auto& ouid : other.Items())
 					{
-						_pArray[j] = _pArray[j + 1];
-
+						if (ouid == uid)
+							currentCount++;
 					}
 				}
-				i--;
-				newsize--;
+				if (currentCount >= count)
+				{
+					if (currentCount > count || uid > rarest)
+					{
+						rarest = uid;
+						count = currentCount;
+					}
+				}
 			}
 		}
-		return newsize;
+		return rarest;
 	}
-
-
 
 }//namespace

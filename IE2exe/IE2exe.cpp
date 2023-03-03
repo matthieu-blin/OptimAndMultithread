@@ -6,438 +6,335 @@
 #include <stdlib.h>
 #include "Source.h"
 #include "Test.h"
-
+#include "RepasChinois.h"
 
 using namespace std;
 
 int main(int argc, char* argv[])
 {
 
-	bool src = argc > 2 ? strcmp(argv[1], "src") == 0 : false;
-	int testcase = argc> 2 ? atoi(argv[2]) : 9;
+	bool src = argc > 2 ? strcmp(argv[1], "src") == 0 : true;
+	int testcase = argc> 2 ? atoi(argv[2]) : 14;
 	switch (testcase)
 	{
-	case 0 :
-	{
-		if (src)
-		{
-			Source::Test0 src;
-			for (int i = 0; i < 100000; ++i)
-				src._GenerateNewPlayer();
-		}
-		else
-		{
-			Test::Test0 test;
-			for (int i = 0; i < 100000; ++i)
-				test._GenerateNewPlayer();
-		}
-		return 1;
-	}
 	case 1:
 	{
+		//In this test, we only want to compute the global death stats, focus on this. Not on potential futur behavior
 		if (src)
 		{
-			char* result = nullptr;
-			Source::Test1 src;
-			src.FillWithFakeResources(100000);
+			unsigned long long result = 0;
+			Source::Test1 tst(10000);
 			for (int i = 0; i < 10000; ++i)
 			{
-				result = src.FindData(std::rand());
+				result += tst.ComputeDeathStats();
 			}
-			return result != nullptr ? 1 : 2;
-
+			//301814810000
+			return (int)result;
 		}
 		else
 		{
-			char* result = nullptr;
-			Test::Test1 src;
-			src.FillWithFakeResources(100000);
+			unsigned long long result = 0;
+			Test::Test1 tst(10000);
 			for (int i = 0; i < 10000; ++i)
 			{
-				result = src.FindData(std::rand());
+				result += tst.ComputeDeathStats();
 			}
-			return result != nullptr ? 1 : 2;
+			return (int)result;
 		}
-		return 1;
 	}
 	case 2:
 	{
 		if (src)
 		{
-			Source::Test2 src;
-			for (int i = 0; i < 10000; ++i)
+			Source::Test2 tst;
+			for (int i = 0; i < 1000000; ++i)
 			{
-				src.InsertPlayer(std::rand(), ((float)std::rand() / RAND_MAX) * 2500.f);
+				Source::Test2::_Mob _mob(i);
+				tst.PushMob(_mob);
 			}
-			bool found = false;
-			for (int i = 0; i < 10000; ++i)
+			for (int i = 0; i < 1000000; ++i)
 			{
-				long long uid = src.FindNearestAdversary(((float)std::rand() / RAND_MAX) * 2500.f);
-				if (uid > 0)
-					found = true;
+				tst.PopMob();
 			}
-			return found ? 1 : 2;
-
+			return (int)1;
 		}
 		else
 		{
-			Test::Test2 src;
-			for (int i = 0; i < 10000; ++i)
+			Test::Test2 tst;
+			for (int i = 0; i < 1000000; ++i)
 			{
-				src.InsertPlayer(std::rand(), ((float)std::rand() / RAND_MAX) * 2500.f);
+				Test::Test2::_Mob _mob(i);
+				tst.PushMob(_mob);
 			}
-			bool found = false;
-			for (int i = 0; i < 10000; ++i)
+			for (int i = 0; i < 1000000; ++i)
 			{
-				long long uid = src.FindNearestAdversary(((float)std::rand() / RAND_MAX) * 2500.f);
-				if (uid > 0)
-					found = true;
+				tst.PopMob();
 			}
-			return found ? 1 : 2;
+			return (int)1;
 		}
-		return 1;
 	}
 	case 3:
 	{
 		if (src)
 		{
-			Source::Test3 src;
-			for (int i = 0; i < 5000000; ++i)
+			//in this test we build kind of dependancy tree of replica objects for network purpose
+			//ex : vehicule->player who drive it -> backpack of the player
+			//object have an id only unique relative to its parent.
+			//and we want to compute a 'composite' id : an Unique ID that represent the object.  
+			Source::Test3 t;
+			std::vector<Source::Test3::Replica*> filler;
+			for (int i = 0; i < 10000; ++i)
 			{
-				src.InsertPosition(Source::Test3::_Vector3{ i * 1.0f, i * 0.5f, i * 1.7f });
+				Source::Test3::Replica* r = new Source::Test3::Replica();
+				r->Uid = i;
+				if (i > 5)
+				{
+					int index = rand() % filler.size();
+					r->depth = filler[index]->depth + 1;
+					r->_parent = filler[index];
+					r->depth = r->_parent->depth + 1;
+					r->_parent->_children.push_back(r);
+				}
+				else
+				{
+					r->depth = 0;
+					t._PushReplica(r);
+				}
+				filler.push_back(r);
 			}
+			int result = 0;
+			//this composite ID will be used numerous time across lot of gameplay code 
+			for (int i = 0; i < 10000000; ++i)
+			{
+				result += filler[rand() % filler.size()]->ComputeCompositeID();
+			}
+			for (auto* r : filler)
+			{
+				delete r;
+			}
+			return result;
+
 		}
 		else
 		{
-			Test::Test3 tst;
-			for (int i = 0; i < 5000000; ++i)
+			Test::Test3 t;
+			std::vector<Test::Test3::Replica*> filler;
+			for (int i = 0; i < 10000; ++i)
 			{
-				tst.InsertPosition(Test::Test3::_Vector3{ i * 1.0f, i * 0.5f, i * 1.7f });
+				Test::Test3::Replica* r = new Test::Test3::Replica();
+				r->Uid = i;
+				if (i > 5)
+				{
+					int index = rand() % filler.size();
+					r->depth = filler[index]->depth + 1;
+					r->_parent = filler[index];
+					r->depth = r->_parent->depth + 1;
+					r->_parent->_children.push_back(r);
+				}
+				else
+				{
+					r->depth = 0;
+					t._PushReplica(r);
+				}
+				filler.push_back(r);
 			}
+			int result = 0;
+			for (int i = 0; i < 10000000; ++i)
+			{
+				result += filler[rand() % filler.size()]->ComputeCompositeID();
+			}
+			for (auto* r : filler)
+			{
+				delete r;
+			}
+			return result;
 		}
-		return 1;
 	}
 	case 4:
 	{
-		std::vector<std::function<bool()>> conditions;
-		static std::function<bool()> randCondition = []()->bool
+		if(src)
 		{
-			return std::rand() % 2 == 0;
-		};
-		conditions.push_back(randCondition);
-		if (src)
-		{
-			Source::Test4 src;
-			for (int i = 0; i < 100000; ++i)
+			Source::Test4 t;
+			double result = 0;
+			for (int i = 0; i < 10000000; ++i)
 			{
-				src.InsertNewPlayerAtConditions(conditions);
+				result += t.FractionOfPi((Source::Test4::fracOfPi)(rand() % 6));
 			}
+			return result;
 		}
 		else
 		{
-			Test::Test4 src;
-			for (int i = 0; i < 100000; ++i)
+			Test::Test4 t;
+			double result = 0;
+			for (int i = 0; i < 10000000; ++i)
 			{
-				src.InsertNewPlayerAtConditions(conditions);
+				result += t.FractionOfPi((Test::Test4::fracOfPi)(rand() % 6));
 			}
+			return result;
 		}
-		return 1;
 	}
 	case 5:
-	case 6: 
 	{
-		if (src)
+		int result = 0;
+		int rand = std::rand();
+		float minHeight = ((rand & 0xFF) % 4) + 3;
+		float maxHeight = minHeight + (((rand & 0xFF00) >> 8) % 6);
+		if(src)
 		{
-			Source::Test6 tst;
-			tst.InsertXMob(1000);
-			tst.InsertXPlayer(1000);
 			for (int i = 0; i < 10000; ++i)
 			{
-				tst.ImpulseAll(i * 0.1f, i * 0.1f);
+				Source::Test5 t;
+				t._CreateForest(200, minHeight, maxHeight);
+				for (int i = 0; i < 100; ++i)
+				{
+					auto& tree = t.FindOneOfTallestTree();
+					result += tree.height;
+					tree.height = 1; //cut 
+				}
 			}
-
 		}
 		else
 		{
-			Test::Test6 tst;
-			tst.InsertXMob(1000);
-			tst.InsertXPlayer(1000);
 			for (int i = 0; i < 10000; ++i)
 			{
-				tst.ImpulseAll(i * 0.1f, i * 0.1f);
+				Test::Test5 t;
+				t._CreateForest(200, minHeight, maxHeight);
+				for (int i = 0; i < 100; ++i)
+				{
+					auto& tree = t.FindOneOfTallestTree();
+					result += tree.height;
+					tree.height = 1; //cut 
+				}
 			}
-
 		}
-		return 1;
+			return result;
 	}
+	case 6:
 	{
+		double result = 0;
+		const int S = 2048;
+		double A[S];
+		double B[S];
+		for (int i = 0; i < S; ++i)
+		{
+			A[i] = (i) / 3.f;
+			B[i] = (i) / 2.f;
+		}
+
 		if (src)
 		{
-			Source::Test6 tst;
-			tst.InsertXMob(1000);
-			tst.InsertXPlayer(1000);
-			for (int i = 0; i < 10000; ++i)
+			Source::Test6 t(1000);
+			for (int i = 0; i < 100000; ++i)
 			{
-				tst.ImpulseAll(i * 0.1f, i * 0.1f);
+				result += t.Increment();
 			}
-
 		}
 		else
 		{
-			Test::Test6 tst;
-			tst.InsertXMob(1000);
-			tst.InsertXPlayer(1000);
-			for (int i = 0; i < 10000; ++i)
+			Test::Test6 t(1000);
+			for (int i = 0; i < 100000; ++i)
 			{
-				tst.ImpulseAll(i * 0.1f, i * 0.1f);
+				result += t.Increment();
 			}
-
 		}
-		return 1;
+		return result;
 	}
 	case 7:
 	{
+		int result = 0;
 		if (src)
 		{
-			Source::Test7 tst;
-			tst._InsertXEntity(1000);
-			for (int i = 0; i < 100000; ++i)
+			Source::Test7 t;
+			t._Reserve(100);
+			for (int n = 0; n < 10000; ++n)
 			{
-				tst.MoveAllEntities(i * 0.1f, i * 0.1f);
+				for (int i = 0; i < 20; ++i)
+				{
+					int rand = std::rand();
+					t._InsertPlayer(Source::Test7::_Player{ i, rand % 128, rand % 64, rand % 32 });
+				}
+				result += t.FindSkillestPlayer();
 			}
 		}
 		else
 		{
-			Test::Test7 tst;
-			tst._InsertXEntity(1000);
-			for (int i = 0; i < 100000; ++i)
+			Test::Test7 t;
+			t._Reserve(100);
+			for (int n = 0; n < 10000; ++n)
 			{
-				tst.MoveAllEntities(i * 0.1f, i * 0.1f);
+				for (int i = 0; i < 20; ++i)
+				{
+					int rand = std::rand();
+					t._InsertPlayer(Test::Test7::_Player{ i, rand % 128, rand % 64, rand % 32 });
+				}
+				result += t.FindSkillestPlayer();
 			}
 		}
-		return 1;
+		return result;
 	}
+
 	case 8:
 	{
+		int result = 0;
 		if (src)
 		{
-			Source::Test8::LargeMatrix A;
-			Source::Test8::LargeMatrix B;
-			Source::Test8::LargeMatrix C;
-			for (int i = 0; i < 100; ++i)
+			Source::Test8 t;
+			//creating items
+			for (int n = 0; n < 1000; ++n)
 			{
-				Source::Test8::MultiplyMatrix(A, B, C);
+				t._AddItem(Source::Test8::_Item(std::rand() % 9999));
 			}
+			//populating players with items
+			for (int n = 0; n < 2000; ++n)
+			{
+				Source::Test8::_Inventory inventory;
+				for (int i = 0; i < 20; ++i)
+				{
+					int id = std::rand() % 9999;
+					if (t._IsValidItem(id))
+						inventory.AddItem(id);
+				}
+				t._AddInventory(inventory);
+			}
+			//function to optimize : this question have multiple layer possible from 'meh' optimisation to 'best' optimisation
+			//points will be rewarded depending of this.
+			return t.RetrieveMostCommon();
 		}
 		else
 		{
-			Test::Test8::LargeMatrix A;
-			Test::Test8::LargeMatrix B;
-			Test::Test8::LargeMatrix C;
-			for (int i = 0; i < 100; ++i)
+			Test::Test8 t;
+			//creating items
+			for (int n = 0; n < 1000; ++n)
 			{
-				Test::Test8::MultiplyMatrix(A, B, C);
+				t._AddItem(Test::Test8::_Item(std::rand() % 9999));
 			}
+			//populating players with items
+			for (int n = 0; n < 2000; ++n)
+			{
+				Test::Test8::_Inventory inventory;
+				for (int i = 0; i < 20; ++i)
+				{
+					int id = std::rand() % 9999;
+					if (t._IsValidItem(id))
+						inventory.AddItem(id);
+				}
+				t._AddInventory(inventory);
+			}
+			//function to optimize : this question have multiple layer possible from 'meh' optimisation to 'best' optimisation
+			//points will be rewarded depending of this.
+			return t.RetrieveMostCommon();
 		}
+		return result;
+	}
+
+
+	case 21:
+	{
+		RepasChinois repas;
+		repas.MettreLaTable();
+		repas.Manger();
 		return 1;
 	}
-	case 9: 
-	{
-		if (src)
-		{
-			unsigned int res = 0;
-			Source::Test9 tst;
-			tst._InitializeRandomValue();
-			for (int i = 0; i < 1000000; ++i)
-			{
-				res += tst.FindNearestRandom(std::rand() % 255);
-			}
-			return res;
-		}
-		else
-		{
-			unsigned int res = 0;
-			Test::Test9 tst;
-			tst._InitializeRandomValue();
-			for (int i = 0; i < 1000000; ++i)
-			{
-				res += tst.FindNearestRandom(std::rand() % 255);
-			}
-			return res;
-
-		}
-		return 1;
-	}
-
-	case 10: 
-	{
-		constexpr char* resources[] = {
-		 "c:\file0.txt"
-		, "c:\file1.txt"
-		, "c:\file2.txt"
-		, "c:\file3.txt"
-		, "c:\file4.txt"
-		, "c:\file5.txt"
-		, "c:\file6.txt"
-		, "c:\file7.txt"
-		, "c:\file8.txt"
-		, "c:\file9.txt"
-		, "c:\file0.txt"
-		, "c:\file11.txt"
-		, "c:\file12.txt"
-		, "c:\file13.txt"
-		, "c:\file14.txt"
-		, "c:\file15.txt"
-		, "c:\file16.txt"
-		, "c:\file17.txt"
-		, "c:\file18.txt"
-		, "c:\file19.txt"
-		, "c:\file20.txt"
-		, "c:\file21.txt"
-		, "c:\file22.txt"
-		, "c:\file23.txt"
-		, "c:\file24.txt"
-		, "c:\file25.txt"
-		, "c:\file26.txt"
-		, "c:\file27.txt"
-		, "c:\file28.txt"
-		, "c:\file29.txt"
-		, "c:\file30.txt"
-		, "c:\file31.txt"
-		, "c:\file32.txt"
-		, "c:\file33.txt"
-		, "c:\file34.txt"
-		, "c:\file35.txt"
-		, "c:\file36.txt"
-		, "c:\file37.txt"
-		, "c:\file38.txt"
-		, "c:\file39.txt" 
-		, "c:\file40.txt"
-		, "c:\file41.txt"
-		, "c:\file42.txt"
-		, "c:\file43.txt"
-		, "c:\file44.txt"
-		, "c:\file45.txt"
-		, "c:\file46.txt"
-		, "c:\file47.txt"
-		, "c:\file48.txt"
-		, "c:\file49.txt" 
-		};
-		unsigned long long t = 0;
-		if (src)
-		{
-			Source::Test10 tst;
-			tst._InitResource((const char**)resources, 50);
-			for (int i = 0; i < 20; ++i)
-			{
-				char* data = tst.GetData(resources[std::rand() % 40]);
-				t += (unsigned long long)data;
-			}
-			return t;
-		}
-		else
-		{
-			Test::Test10 tst;
-			tst._InitResource((const char**)resources, 50);
-			for (int i = 0; i < 20; ++i)
-			{
-				char* data = tst.GetData(resources[std::rand() % 40]);
-				t += (unsigned long long)data;
-			}
-			return t;
-		}
-		return 1;
-	}
-	
-	case 11:
-	{
-		if (src)
-		{
-			Source::Test11 tst; 
-			int result = 0;
-
-			int n = 100000;
-			while (--n, n >= 0)
-			{
-				result += tst.SumAllDigits("0123456789");//45
-				result += tst.SumAllDigits("le chien a mang� 10 bonnes croquettes");
-				result += tst.SumAllDigits("qwettytuytiyo32`321532vcx456sf1�2`trey");
-				result += tst.SumAllDigits("Le Tr�ne de fer (A Song of Ice and Fire) est une s�rie de romans de fantasy de George R. R. Martin, dont l'�criture et la parution sont en cours. Martin a commenc� � l'�crire en 1991 et le premier volume est paru en 1996 chez Bantam Books. Pr�vue � l'origine comme une trilogie, la s�rie compte d�sormais cinq volumes publi�s et deux autres sont attendus (les tomes ont ensuite �t� red�coup�s dans la traduction fran�aise).  L'histoire se d�roule dans un monde imaginaire o� la soci�t� est de type f�odal et o� la magie et des cr�atures l�gendaires (telles que les dragons) ont exist� mais sont cens�es avoir disparu. Trois intrigues principales s'y entrem�lent : dans le royaume des Sept Couronnes, plusieurs maisons nobles rivalisent pour l'obtention du tr�ne ; dans les contr�es glac�es situ�es au nord du royaume, une race de cr�atures suppos�e appartenir aux l�gendes se r�veille ; et sur le continent oriental, la derni�re h�riti�re des Targaryen (la dynastie royale des Sept Couronnes renvers�e quinze ans auparavant), cherche � reconqu�rir le tr�ne.  Chaque chapitre est pr�sent� � travers le point de vue de l'un des personnages principaux. Les th�mes abord�s sont plus r�alistes que dans la fantasy traditionnelle. Les quelque vingt personnages principaux pr�sentent souvent un comportement d'une moralit� ambigu�, et les intrigues politiques et les renversements de situation sont fr�quents.La violence et la sexualit� occupent aussi des places importantes. ");
-
-			}
-			return result;
-		}
-		else
-		{
-			Test::Test11 tst;
-			int result = 0;
-			int n = 100000;
-			while (--n, n >= 0)
-			{
-				result += tst.SumAllDigits("0123456789");//45
-				result += tst.SumAllDigits("le chien a mang� 10 bonnes croquettes");
-				result += tst.SumAllDigits("qwettytuytiyo32`321532vcx456sf1�2`trey");
-				result += tst.SumAllDigits("Le Tr�ne de fer (A Song of Ice and Fire) est une s�rie de romans de fantasy de George R. R. Martin, dont l'�criture et la parution sont en cours. Martin a commenc� � l'�crire en 1991 et le premier volume est paru en 1996 chez Bantam Books. Pr�vue � l'origine comme une trilogie, la s�rie compte d�sormais cinq volumes publi�s et deux autres sont attendus (les tomes ont ensuite �t� red�coup�s dans la traduction fran�aise).  L'histoire se d�roule dans un monde imaginaire o� la soci�t� est de type f�odal et o� la magie et des cr�atures l�gendaires (telles que les dragons) ont exist� mais sont cens�es avoir disparu. Trois intrigues principales s'y entrem�lent : dans le royaume des Sept Couronnes, plusieurs maisons nobles rivalisent pour l'obtention du tr�ne ; dans les contr�es glac�es situ�es au nord du royaume, une race de cr�atures suppos�e appartenir aux l�gendes se r�veille ; et sur le continent oriental, la derni�re h�riti�re des Targaryen (la dynastie royale des Sept Couronnes renvers�e quinze ans auparavant), cherche � reconqu�rir le tr�ne.  Chaque chapitre est pr�sent� � travers le point de vue de l'un des personnages principaux. Les th�mes abord�s sont plus r�alistes que dans la fantasy traditionnelle. Les quelque vingt personnages principaux pr�sentent souvent un comportement d'une moralit� ambigu�, et les intrigues politiques et les renversements de situation sont fr�quents.La violence et la sexualit� occupent aussi des places importantes. ");
-			}
-			return result;
-		}
-		return 1;
-	}
-
-	case 12 :
-	{
-		if (src)
-		{
-			Source::Test12 tst;
-			int result = 0;
-
-			int n = 1000000;
-			while (--n, n >= 0)
-			{
-				unsigned long pArray[] = { 1,2,3,4,5 };
-				unsigned long pArray2[] = { 788, 432,43 ,14321,43214,5437,6584,876,978,9871,870,9870,98097,72,5432, 783, 4966, 4984613, 849, 1256, 16516, 1686, 16168, 156184, 616513784 };
-				unsigned long newsize = tst.filterArray(pArray, 5);
-				for (int i = 0; i < newsize; i++)
-				{
-					result += pArray[i];
-				}
-
-				newsize = tst.filterArray(pArray2, sizeof(pArray2) / sizeof(long));
-				for (int i = 0; i < newsize; i++)
-				{
-					result += pArray2[i];
-				}
-			}
-			return result;
-		}
-		else
-		{
-			Test::Test12 tst;
-			int result = 0;
-
-			int n = 1000000;
-			while (--n, n >= 0)
-			{
-				unsigned long pArray[] = { 1,2,3,4,5 };
-				unsigned long pArray2[] = { 788, 432,43 ,14321,43214,5437,6584,876,978,9871,870,9870,98097,72,5432, 783, 4966, 4984613, 849, 1256, 16516, 1686, 16168, 156184, 616513784 };
-				unsigned long newsize = tst.filterArray(pArray, 5);
-				for (int i = 0; i < newsize; i++)
-				{
-					result += pArray[i];
-				}
-
-				newsize = tst.filterArray(pArray2, sizeof(pArray2) / sizeof(long));
-				for (int i = 0; i < newsize; i++)
-				{
-					result += pArray2[i];
-				}
-			}
-			return result;
-		}
-		return 0;
-
-	}
-
 	}
 	return -1;
 }
