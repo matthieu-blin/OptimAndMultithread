@@ -1,6 +1,3 @@
-// IE2exe.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include <string.h>
 #include <stdlib.h>
@@ -23,9 +20,10 @@ int main(int argc, char* argv[])
 		if (src)
 		{
 			unsigned long long result = 0;
-			Source::Test1 tst(10000);
-			for (int i = 0; i < 10000; ++i)
+			Source::Test1 tst(4000);
+			for (int i = 0; i < 1000; ++i)
 			{
+				tst._KillRandom();
 				result += tst.ComputeDeathStats();
 			}
 			//301814810000
@@ -34,9 +32,10 @@ int main(int argc, char* argv[])
 		else
 		{
 			unsigned long long result = 0;
-			Test::Test1 tst(10000);
-			for (int i = 0; i < 10000; ++i)
+			Test::Test1 tst(4000);
+			for (int i = 0; i < 1000; ++i)
 			{
+				tst._KillRandom();
 				result += tst.ComputeDeathStats();
 			}
 			return (int)result;
@@ -106,7 +105,7 @@ int main(int argc, char* argv[])
 			//this composite ID will be used numerous time across lot of gameplay code 
 			for (int i = 0; i < 10000000; ++i)
 			{
-				result += filler[rand() % filler.size()]->ComputeCompositeID();
+				result += (int)filler[rand() % filler.size()]->ComputeCompositeID();
 			}
 			for (auto* r : filler)
 			{
@@ -141,7 +140,7 @@ int main(int argc, char* argv[])
 			int result = 0;
 			for (int i = 0; i < 10000000; ++i)
 			{
-				result += filler[rand() % filler.size()]->ComputeCompositeID();
+				result += (int)filler[rand() % filler.size()]->ComputeCompositeID();
 			}
 			for (auto* r : filler)
 			{
@@ -160,7 +159,7 @@ int main(int argc, char* argv[])
 			{
 				result += t.FractionOfPi((Source::Test4::fracOfPi)(rand() % 6));
 			}
-			return result;
+			return (int)result;
 		}
 		else
 		{
@@ -170,14 +169,14 @@ int main(int argc, char* argv[])
 			{
 				result += t.FractionOfPi((Test::Test4::fracOfPi)(rand() % 6));
 			}
-			return result;
+			return (int)result;
 		}
 	}
 	case 5:
 	{
 		int result = 0;
 		int rand = std::rand();
-		float minHeight = ((rand & 0xFF) % 4) + 3;
+		float minHeight = (float) ((rand & 0xFF) % 4) + 3;
 		float maxHeight = minHeight + (((rand & 0xFF00) >> 8) % 6);
 		if(src)
 		{
@@ -188,7 +187,7 @@ int main(int argc, char* argv[])
 				for (int i = 0; i < 100; ++i)
 				{
 					auto& tree = t.FindOneOfTallestTree();
-					result += tree.height;
+					result += (int)tree.height;
 					tree.height = 1; //cut 
 				}
 			}
@@ -202,7 +201,7 @@ int main(int argc, char* argv[])
 				for (int i = 0; i < 100; ++i)
 				{
 					auto& tree = t.FindOneOfTallestTree();
-					result += tree.height;
+					result += (int)tree.height;
 					tree.height = 1; //cut 
 				}
 			}
@@ -211,7 +210,7 @@ int main(int argc, char* argv[])
 	}
 	case 6:
 	{
-		double result = 0;
+		long long result = 0;
 		const int S = 2048;
 		double A[S];
 		double B[S];
@@ -226,7 +225,7 @@ int main(int argc, char* argv[])
 			Source::Test6 t(1000);
 			for (int i = 0; i < 100000; ++i)
 			{
-				result += t.Increment();
+				result += t.Increment(rand()% 5, rand()% 5);
 			}
 		}
 		else
@@ -234,10 +233,10 @@ int main(int argc, char* argv[])
 			Test::Test6 t(1000);
 			for (int i = 0; i < 100000; ++i)
 			{
-				result += t.Increment();
+				result += t.Increment(rand()% 5,rand()% 5);
 			}
 		}
-		return result;
+		return (int)result;
 	}
 	case 7:
 	{

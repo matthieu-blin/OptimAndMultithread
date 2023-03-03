@@ -24,7 +24,7 @@ namespace Test
 	public:
 		struct _Player
 		{
-			_Player(int _ID) : Uid(_ID) { m_totalDeath = rand() % 9999; }
+			_Player(int _ID) : Uid(_ID) { }
 			int Uid = 0;
 			unsigned int m_totalDeath = 0;
 			bool operator<(const _Player& _player) const {
@@ -33,7 +33,8 @@ namespace Test
 		};
 
 		Test1(int _nb);
-		unsigned long long ComputeDeathStats();
+		void _KillRandom();
+		unsigned long long ComputeDeathStats() const;
 
 	private:
 
@@ -49,7 +50,7 @@ namespace Test
 			_Mob(int _index) {
 				life = rand() % 999 + 1;
 				archetype = rand() % 5;
-				name = _generateName(archetype); name += std::to_string(_index);
+				name = _generateName(archetype) + std::to_string(_index);
 			}
 			unsigned int life = 0;
 			int archetype = 0;
@@ -151,9 +152,9 @@ namespace Test
 	public:
 
 		Test6(int _n);
-		std::vector<int> m_valuesA;
-		std::vector<int> m_valuesB;
-		int Increment();
+		std::vector<int> _valuesA;
+		std::vector<int> _valuesB;
+		int Increment(int _a, int _b);
 	};
 
 	//TEST 17 ////////////////////////////////////////////////////////////////////////
@@ -193,7 +194,7 @@ namespace Test
 		{
 			_Item(ItemUID _ID = 0) : Uid(_ID) {
 				//we will use uid to look for correct icon, texture, stats, etc.
-				std::stringstream oss;
+				std::ostringstream oss;
 				oss << "Icon_" << Uid << ".png";
 				iconPath = oss.str();
 			}

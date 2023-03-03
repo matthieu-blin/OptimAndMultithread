@@ -11,8 +11,8 @@ long long src_duration = 0;
 long long tst_duration = 0;
 
 #define EXEC_AND_COMPARE_DURATION(num) \
-	int s = X.exec("IE2exe.exe src " #num, &src_duration); \
-	int t = X.exec("IE2exe.exe tst " #num, &tst_duration); \
+	int s = X.exec("IE.exe src " #num, &src_duration); \
+	int t = X.exec("IE.exe tst " #num, &tst_duration); \
 	printf("Test " #num " : src duration : %I64d (%d), tst duration : %I64d (%d) \n", src_duration, s, tst_duration, t); \
 	CHECK(s == t );\
 	CHECK(src_duration > tst_duration)
@@ -51,6 +51,6 @@ TEST_CASE("Test8", "[Optim]")
 }
 TEST_CASE("Multithread", "[MultiThread]")
 {
-	CHECK(X.exec("IE2exe.exe tst  21", &tst_duration) == 1); 
+	CHECK(X.exec("IE.exe tst  21", &tst_duration) == 1); 
 }
 

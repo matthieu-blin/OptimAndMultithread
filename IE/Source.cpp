@@ -1,7 +1,9 @@
 #include "stdafx.h"
-#include "Test.h"
+#include "Source.h"
+#include <algorithm>
+#include <cassert>
 
-namespace Test
+namespace Source
 {
 	//TEST 11 ////////////////////////////////////////////////////////////////////////
 
@@ -13,7 +15,14 @@ namespace Test
 		}
 	}
 
-	unsigned long long Test1::ComputeDeathStats()
+	void Test1::_KillRandom() {
+		for ( auto& pl : players)
+		{
+			const_cast<_Player&>(pl).m_totalDeath = rand() % 9999;
+		}
+	}
+
+	unsigned long long Test1::ComputeDeathStats() const
 	{
 		unsigned long long result = 0;
 		for (const auto& pl : players)
@@ -92,7 +101,7 @@ namespace Test
 		_Tree& result = _null;
 		for (int i = 0; i < _nbTrees; ++i)
 		{
-			if (result.height <= _forest[i].height)
+			if (result.height < _forest[i].height)
 			{
 				result = _forest[i];
 			}
@@ -104,17 +113,18 @@ namespace Test
 	
 	Test6::Test6(int _n)
 	{
-		m_valuesA.resize(_n);
-		m_valuesB.resize(_n);
+		_valuesA.resize(_n);
+		_valuesB.resize(_n);
 	}
-	int Test6::Increment()
+	int Test6::Increment(int _a, int _b)
 	{
+		//increase both list with something
 		int sum = 0;
-		for (int i = 0; i < m_valuesA.size(); ++i)
+		for (int i = 0; i < _valuesA.size(); ++i)
 		{
-			m_valuesA[i]+=1;
-			m_valuesB[i]+=2;
-			sum += m_valuesA[i] + m_valuesB[i];
+			_valuesA[i] += _a;
+			_valuesB[i] += _b;
+			sum += _a + _b;
 		}
 		return sum;
 
@@ -145,7 +155,7 @@ namespace Test
 	//retrieve the most common item possessed by players
 
 	Test8::ItemUID Test8::RetrieveMostCommon() const {
-		ItemUID rarest = 0;
+		ItemUID mostcommon = 0;
 		unsigned int count = 0;
 		for (const auto& inventory : m_playerInventory)
 		{
@@ -164,15 +174,15 @@ namespace Test
 				}
 				if (currentCount >= count)
 				{
-					if (currentCount > count || uid > rarest)
+					if (currentCount > count || uid > mostcommon)
 					{
-						rarest = uid;
+						mostcommon = uid;
 						count = currentCount;
 					}
 				}
 			}
 		}
-		return rarest;
+		return mostcommon;
 	}
 
 }//namespace
