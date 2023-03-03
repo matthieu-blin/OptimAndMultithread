@@ -25,6 +25,9 @@
     <ClInclude Include="Test.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Algo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

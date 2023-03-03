@@ -49,6 +49,10 @@ TEST_CASE("Test8", "[Optim]")
 {
 	EXEC_AND_COMPARE_DURATION(8);
 }
+TEST_CASE("Algo", "[Algo]")
+{
+	CHECK(X.exec("IE.exe tst  20", &tst_duration) == 1); 
+}
 TEST_CASE("Multithread", "[MultiThread]")
 {
 	CHECK(X.exec("IE.exe tst  21", &tst_duration) == 1); 

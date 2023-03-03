@@ -4,6 +4,7 @@
 #include "Source.h"
 #include "Test.h"
 #include "RepasChinois.h"
+#include "Algo.h"
 
 using namespace std;
 
@@ -326,6 +327,11 @@ int main(int argc, char* argv[])
 		return result;
 	}
 
+	case 20:
+	{
+		DisplayCorGi(1, 100);
+		DisplayCorGiOptimized(1, 100);
+	}
 
 	case 21:
 	{
